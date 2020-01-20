@@ -1,0 +1,15 @@
+{
+    "title": "Should throw InsightError when IS filter is empty",
+    "query": {
+        "WHERE": {
+            "IS": {}
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

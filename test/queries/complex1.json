@@ -1,0 +1,130 @@
+{
+    "title": "Complex query that tests all possible logic and keys with out a sorting order with wildcard asterisks in input string",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_dept": "cpsc"
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_id": "310"
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_instructor": "*elisa*"
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_title": "*eng"
+                    }
+                },
+                {
+                    "OR": [
+                        {
+                            "EQ": {
+                                "courses_avg": 90
+                            }
+                        },
+                        {
+                            "GT": {
+                                "courses_pass": 20
+                            }
+                        },
+                        {
+                            "LT": {
+                                "courses_fail": 20
+                            }
+                        },
+                        {
+                            "NOT": {
+                                "GT": {
+                                    "courses_audit": 5
+                                }
+                            }
+                        },
+                        {
+                            "EQ": {
+                                "courses_year": 2018
+                            }
+                        },
+                        {
+                            "IS": {
+                                "courses_uuid": "1234"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_avg",
+                "courses_pass",
+                "courses_fail",
+                "courses_audit",
+                "courses_year",
+                "courses_dept",
+                "courses_id",
+                "courses_instructor",
+                "courses_title",
+                "courses_uuid"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result": [
+        {
+            "courses_avg": 80.35,
+            "courses_pass": 150,
+            "courses_fail": 0,
+            "courses_audit": 0,
+            "courses_year": 2014,
+            "courses_dept": "cpsc",
+            "courses_id": "310",
+            "courses_instructor": "baniassad, elisa",
+            "courses_title": "intr sftwr eng",
+            "courses_uuid": "1294"
+        },
+        {
+            "courses_avg": 77.13,
+            "courses_pass": 185,
+            "courses_fail": 0,
+            "courses_audit": 0,
+            "courses_year": 2015,
+            "courses_dept": "cpsc",
+            "courses_id": "310",
+            "courses_instructor": "baniassad, elisa",
+            "courses_title": "intr sftwr eng",
+            "courses_uuid": "62385"
+        },
+        {
+            "courses_avg": 81.18,
+            "courses_pass": 162,
+            "courses_fail": 3,
+            "courses_audit": 0,
+            "courses_year": 2015,
+            "courses_dept": "cpsc",
+            "courses_id": "310",
+            "courses_instructor": "baniassad, elisa",
+            "courses_title": "intr sftwr eng",
+            "courses_uuid": "62386"
+        },
+        {
+            "courses_avg": 79.12,
+            "courses_pass": 75,
+            "courses_fail": 1,
+            "courses_audit": 1,
+            "courses_year": 2014,
+            "courses_dept": "cpsc",
+            "courses_id": "310",
+            "courses_instructor": "baniassad, elisa",
+            "courses_title": "intr sftwr eng",
+            "courses_uuid": "67312"
+        }
+    ]
+}

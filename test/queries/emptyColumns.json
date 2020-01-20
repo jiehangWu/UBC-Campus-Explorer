@@ -1,0 +1,11 @@
+{
+    "title": "COLUMNS is empty",
+    "query": {
+        "WHERE": {},
+        "OPTIONS": {
+            "COLUMNS": []
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

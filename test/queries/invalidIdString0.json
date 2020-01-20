@@ -1,0 +1,26 @@
+{
+    "title": "The idString is invalid with underscore",
+    "query": {
+        "WHERE": {
+            "OR": [
+                {
+                    "LT": {
+                        "cour_ses_avg": 60
+                    }
+                },
+                {
+                    "LT": {
+                        "cour_ses_fail": 50
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "cour_ses_pass"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}
