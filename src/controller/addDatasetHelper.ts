@@ -16,18 +16,25 @@ interface ICourse {
     year: number;
 }
 
-function parseFileContent(fileContent: any, courses: ICourse[]): void {
-    // check if each json file is valid
-    if (fileContent !== null && fileContent.result !== null && ("result" in fileContent)) {
+function parseFileContents(fileContents: any[]): Promise<ICourse[]> {
+    let courses: ICourse[] = [];
+    for (let fileContent of fileContents) {
+        if (fileContent === null || fileContent["result"] === null || !("result" in fileContent)) {
+            continue;
+        }
+
         let result = fileContent["result"];
+
         for (let section of result) {
+            if (!validateSection) {
+                continue;
+            }
             let year;
             if (section["Year"] === "overall") {
                 year = 1900;
             } else {
                 year = section["Year"];
             }
-
             courses.push({
                 dept: section["Subject"],
                 id: section["Course"],
@@ -42,12 +49,23 @@ function parseFileContent(fileContent: any, courses: ICourse[]): void {
             });
         }
     }
+    return Promise.resolve(courses);
+}
+
+function validateSection(section: any): boolean {
+    // check if every field exists in the course section
+    return ("Subject" in section) && ("Course" in section)
+        && ("Avg" in section) && ("Professor" in section)
+        && ("Title" in section) && ("Pass" in section)
+        && ("Fail" in section) && ("Audit" in section)
+        && ("id" in section) && ("Year" in section);
 }
 
 function saveToDisk(id: string, courses: ICourse[]): void {
     let fs = require("fs");
-    fs.writeFile("./data/" + id + ".json", JSON.stringify(courses), (err: any) => {
-        return Log.error(err);
+
+    fs.writeFileSync("./data/" + id + ".json", JSON.stringify(courses), (err: any) => {
+        Log.error(err);
     });
 }
 
@@ -73,20 +91,25 @@ export function addCourseDataset(id: string, content: string, kind: InsightDatas
 
             Promise.all(promises)
             .then((fileContents: any[]) => {
-                let courses: ICourse[] = [];
-                for (let fileContent of fileContents) {
-                    parseFileContent(fileContent, courses);
-                }
-
-                saveToDisk(id, courses);
-                return resolve(id);
+                return parseFileContents(fileContents)
+                .then((courses: ICourse[]) => {
+                    if (courses.length >= 1) {
+                        saveToDisk(id, courses);
+                        resolve(id);
+                    } else {
+                        reject("This dataset does not contain a valid section");
+                    }
+                })
+                .catch((err: any) => {
+                    reject("This dataset does not contain a valid section");
+                });
             })
             .catch((err: any) => {
-                return reject(err);
+                reject(err);
             });
         })
         .catch((err: any) => {
-            return reject(new InsightError("This file is not valid zip file"));
+            reject(new InsightError("This file is not valid zip file"));
         });
     });
 }

@@ -54,15 +54,14 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     private validateId(id: string): boolean {
+        // check if id is null or undefined
+        if (typeof id === "undefined" || id === null) {
+            return false;
+        }
         // "_" should not be included in id
         if (id.includes("_")) {
             return false;
         }
-
-        if (typeof (id) === undefined) {
-            return false;
-        }
-
         // check if a string contains only whitespaces
         for (let i = 0; i < id.length; i++) {
             if (id.charAt(i) !== " ") {
