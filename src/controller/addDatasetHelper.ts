@@ -63,13 +63,16 @@ function validateSection(section: any): boolean {
 
 function saveToDisk(id: string, courses: ICourse[]): void {
     let fs = require("fs");
+    let dir = "./data/" + id;
 
-    fs.writeFileSync("./data/" + id + ".json", JSON.stringify(courses), (err: any) => {
-        Log.error(err);
-    });
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+
+    fs.writeFileSync(dir + "/" + id + ".json", JSON.stringify(courses));
 }
 
-export function addCourseDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string> {
+export function addCourseDataset(id: string, content: string, kind: InsightDatasetKind): Promise<[string, number]> {
     return new Promise((resolve, reject) => {
         let jszip = new JSZip();
 
@@ -78,7 +81,7 @@ export function addCourseDataset(id: string, content: string, kind: InsightDatas
             // Load file to an array of promises
             let promises: Array<Promise<string>> = [];
 
-            zip.folder(kind).forEach((_, file: JSZipObject) => {
+            zip.folder(id).forEach((_, file: JSZipObject) => {
                 let fileContent = file.async("text")
                     .then((body: string) => {
                         return JSON.parse(body);
@@ -95,7 +98,7 @@ export function addCourseDataset(id: string, content: string, kind: InsightDatas
                 .then((courses: ICourse[]) => {
                     if (courses.length >= 1) {
                         saveToDisk(id, courses);
-                        resolve(id);
+                        resolve([id, courses.length]);
                     } else {
                         reject(new InsightError("This dataset does not contain a valid section"));
                     }

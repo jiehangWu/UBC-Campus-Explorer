@@ -70,7 +70,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     // This is a unit test. You should create more like this!
-    it.only("Should add a valid dataset", function () {
+    it("Should add a valid dataset", function () {
         const id: string = "courses";
         const expected: string[] = [id];
 
@@ -85,7 +85,15 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a dataset to a existing id", function () {
+    // it.only("Should add multiple dataset", function () {
+    //     const id1: string = "courses";
+    //     const id2: string = "courses2";
+
+    //     insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses);
+    //     insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses);
+    // });
+
+    it("Should throw InsightError when adding a dataset to a existing id", function () {
         const id: string = "courses";
 
         return insightFacade
@@ -255,28 +263,19 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    // it("Should be able to add multiple datasets", function () {
+    // it.only("Should be able to add multiple datasets", function () {
     //     const id1: string = "courses";
     //     const id2: string = "courses2";
     //     const expected: string[] = [id1, id2];
 
-    //     return insightFacade
-    //         .addDataset(id1, datasets[id1], InsightDatasetKind.Courses)
-    //         .then((res: string[]) => {
-    //             expect(res).to.deep.equal([id1]);
-    //         })
-    //         .then(() => {
-    //             return insightFacade
-    //                 .addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
-    //                 .then((res: string[]) => {
-    //                     expect(res).to.deep.equal(expected);
-    //                 })
-    //                 .catch((err: any) => {
-    //                     expect.fail(err, expected, "Should not be rejected");
-    //                 });
+    //     insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses);
+    //     return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+    //         .then((result: string[]) => {
+    //             expect(result).to.deep.equal(expected);
     //         })
     //         .catch((err: any) => {
-    //             expect.fail(err, [id1], "Should not be rejected");
+    //             Log.error(err);
+    //             expect.fail(err, expected, "Should not reject");
     //         });
     // });
 
@@ -294,10 +293,12 @@ describe("InsightFacade Add/Remove Dataset", function () {
                         expect(result).to.deep.equal(id);
                     })
                     .catch((err: any) => {
+                        Log.error(err);
                         expect.fail(err, id, "Should not be rejected");
                     });
             })
             .catch((err: any) => {
+                Log.error(err);
                 expect.fail(err, [id], "Should not be rejected");
             });
     });
@@ -367,7 +368,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    // it("Should be able to remove multiple valid datasets", function () {
+    // it.only("Should be able to remove multiple valid datasets", function () {
     //     const id1: string = "courses";
     //     const id2: string = "courses2";
 
@@ -382,23 +383,13 @@ describe("InsightFacade Add/Remove Dataset", function () {
     //         InsightDatasetKind.Courses,
     //     );
 
-    //     return insightFacade
-    //         .removeDataset(id1)
+    //     return insightFacade.removeDataset(id1)
     //         .then((result: string) => {
     //             expect(result).to.deep.equal(id1);
     //         })
-    //         .then(() => {
-    //             return insightFacade
-    //                 .removeDataset(id2)
-    //                 .then((result: string) => {
-    //                     expect(result).to.deep.equal(id2);
-    //                 })
-    //                 .catch((err: any) => {
-    //                     expect.fail(err, id2, "Should not be rejected");
-    //                 });
-    //         })
     //         .catch((err: any) => {
-    //             expect.fail(err, id1, "Should not be rejected");
+    //             Log.error(err);
+    //             expect.fail("Should not reject");
     //         });
     // });
 

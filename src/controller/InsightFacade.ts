@@ -10,10 +10,12 @@ import { addCourseDataset } from "./addDatasetHelper";
 
 export default class InsightFacade implements IInsightFacade {
     public idList: string[];
+    public datasets: InsightDataset[];
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
         this.idList = [];
+        this.datasets = [];
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
@@ -25,8 +27,13 @@ export default class InsightFacade implements IInsightFacade {
 
             if (kind === InsightDatasetKind.Courses) {
                 return addCourseDataset(id, content, kind)
-                    .then((returnedId: any) => {
-                        this.idList.push(returnedId);
+                    .then((result: any) => {
+                        this.idList.push(result[0]);
+                        this.datasets.push({
+                            id: result[0],
+                            kind: InsightDatasetKind.Courses,
+                            numRows: result[1],
+                        });
                         return Promise.resolve(this.idList);
                     })
                     .catch((err: any) => {
@@ -42,7 +49,25 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        return Promise.reject("Not implemented.");
+        if (!this.validateId(id)) {
+            return Promise.reject(new InsightError("This id is invalid"));
+        }
+
+        let path = "./data/" + id;
+        let fs = require("fs-extra");
+
+        if (this.idList.includes(id)) {
+            fs.removeSync(path);
+            this.idList = this.idList.filter((val) => {
+                return val !== id;
+            });
+            this.datasets = this.datasets.filter((dataset) => {
+                return dataset.id !== id;
+            });
+            return Promise.resolve(id);
+        } else {
+            return Promise.reject(new NotFoundError("ID is not in the dataset"));
+        }
     }
 
     public performQuery(query: any): Promise<any[]> {
@@ -50,7 +75,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public listDatasets(): Promise<InsightDataset[]> {
-        return Promise.reject("Not implemented.");
+        return Promise.resolve(this.datasets);
     }
 
     private validateId(id: string): boolean {
