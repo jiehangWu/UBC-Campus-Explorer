@@ -102,7 +102,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a dataset that does not exist", function () {
+    it("Should throw InsightError when adding a dataset that does not exist", function () {
         const id: string = "courses";
 
         return insightFacade
@@ -115,7 +115,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a invalid id with underscore", function () {
+    it("Should throw InsightError when adding a invalid id with underscore", function () {
         const id: string = "course_s";
 
         return insightFacade
@@ -128,7 +128,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a invalid id with whitespace", function () {
+    it("Should throw InsightError when adding a invalid id with whitespace", function () {
         const id: string = " ";
 
         return insightFacade
@@ -141,7 +141,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a NULL id", function () {
+    it("Should throw InsightError when adding a NULL id", function () {
         const id: string = null;
 
         return insightFacade
@@ -154,7 +154,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding to an undefined id", function () {
+    it("Should throw InsightError when adding to an undefined id", function () {
         const id: string = undefined;
 
         return insightFacade
@@ -167,7 +167,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a dataset that is not a ZIP file", function () {
+    it("Should throw InsightError when adding a dataset that is not a ZIP file", function () {
         const id: string = "invalid";
 
         return insightFacade
@@ -180,7 +180,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError when adding a dataset that does not contain a valid json file", function () {
+    it("Should throw InsightError when adding a dataset that does not contain a valid json file", function () {
         const id: string = "invalid";
 
         return insightFacade
@@ -189,11 +189,12 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 expect.fail(result, [], "Should not add dataset");
             })
             .catch((err: any) => {
+                Log.error(err);
                 expect(err).to.be.a.instanceOf(InsightError);
             });
     });
 
-    it.only("Should throw InsightError when adding a dataset that does not contain any file", function () {
+    it("Should throw InsightError when adding a dataset that does not contain any file", function () {
         const id: string = "empty";
 
         return insightFacade
@@ -206,7 +207,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should be able to add dataset given a file that contains both valid and invalid file", function () {
+    it("Should be able to add dataset given a file that contains both valid and invalid file", function () {
         const id: string = "courses";
         const expected: string[] = [id];
 
@@ -224,7 +225,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given a zip file that does not contain courses in its name", function () {
+    it("Should throw InsightError given a zip file that does not contain courses in its name", function () {
         const id: string = "invalidName";
 
         return insightFacade
@@ -237,7 +238,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given a zip file that contains only invalid file", function () {
+    it("Should throw InsightError given a zip file that contains only invalid file", function () {
         const id: string = "courses";
 
         return insightFacade

@@ -26,7 +26,7 @@ function parseFileContents(fileContents: any[]): Promise<ICourse[]> {
         let result = fileContent["result"];
 
         for (let section of result) {
-            if (!validateSection) {
+            if (!validateSection(section)) {
                 continue;
             }
             let year;
@@ -91,17 +91,17 @@ export function addCourseDataset(id: string, content: string, kind: InsightDatas
 
             Promise.all(promises)
             .then((fileContents: any[]) => {
-                return parseFileContents(fileContents)
+                parseFileContents(fileContents)
                 .then((courses: ICourse[]) => {
                     if (courses.length >= 1) {
                         saveToDisk(id, courses);
                         resolve(id);
                     } else {
-                        reject("This dataset does not contain a valid section");
+                        reject(new InsightError("This dataset does not contain a valid section"));
                     }
                 })
                 .catch((err: any) => {
-                    reject("This dataset does not contain a valid section");
+                    reject(new InsightError("This dataset does not contain a valid file"));
                 });
             })
             .catch((err: any) => {
