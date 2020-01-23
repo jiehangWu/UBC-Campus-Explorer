@@ -53,12 +53,13 @@ export default class InsightFacade implements IInsightFacade {
             return Promise.reject(new InsightError("This id is invalid"));
         }
 
-        let path = "./data/" + id + "/" + id + ".json";
+        let path = "./data/" + id;
         let fs = require("fs-extra");
 
         if (this.idList.includes(id)) {
             try {
-                fs.unlinkSync(path);
+                fs.unlinkSync(path + "/" + id + ".json");
+                fs.removeSync(path);
             } catch (err) {
                 return Promise.reject(new InsightError("Could not unlink dataset"));
             }
