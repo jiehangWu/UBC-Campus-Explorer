@@ -281,7 +281,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
     // Remove tests start from here
     // --------------------------------------------------------------------------------
-    it("Should be able to remove a existing dataset given a valid id", function () {
+    it.only("Should be able to remove a existing dataset given a valid id", function () {
         const id: string = "courses";
 
         return insightFacade
@@ -392,7 +392,8 @@ describe("InsightFacade Add/Remove Dataset", function () {
     //             expect.fail("Should not reject");
     //         });
     // });
-
+    // tests for listDatasets
+    // ______________________________________________________________________
     it("Should list an empty array when no dataset is added", function () {
         return insightFacade
             .listDatasets()

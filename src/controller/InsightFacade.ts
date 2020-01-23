@@ -57,7 +57,11 @@ export default class InsightFacade implements IInsightFacade {
         let fs = require("fs-extra");
 
         if (this.idList.includes(id)) {
-            fs.removeSync(path);
+            try {
+                fs.removeSync(path);
+            } catch (err) {
+                return Promise.reject(new InsightError("Invalid path"));
+            }
             this.idList = this.idList.filter((val) => {
                 return val !== id;
             });
