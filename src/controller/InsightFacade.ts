@@ -53,21 +53,28 @@ export default class InsightFacade implements IInsightFacade {
             return Promise.reject(new InsightError("This id is invalid"));
         }
 
-        let path = "./data/" + id;
+        let path = "./data/" + id + "/" + id + ".json";
         let fs = require("fs-extra");
 
         if (this.idList.includes(id)) {
             try {
-                fs.removeSync(path);
+                fs.unlinkSync(path);
             } catch (err) {
-                return Promise.reject(new InsightError("Invalid path"));
+                return Promise.reject(new InsightError("Could not unlink dataset"));
             }
-            this.idList = this.idList.filter((val) => {
-                return val !== id;
+
+            this.idList = this.idList.filter((val: string) => {
+                if (val !== id) {
+                    return val;
+                }
             });
-            this.datasets = this.datasets.filter((dataset) => {
-                return dataset.id !== id;
+
+            this.datasets = this.datasets.filter((dataset: InsightDataset) => {
+                if (dataset.id !== id) {
+                    return dataset;
+                }
             });
+
             return Promise.resolve(id);
         } else {
             return Promise.reject(new NotFoundError("ID is not in the dataset"));
