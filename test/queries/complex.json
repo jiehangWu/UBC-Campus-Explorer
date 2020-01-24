@@ -309,11 +309,6 @@
             "courses_dept": "econ",
             "courses_id": "516",
             "courses_avg": 95
-        },
-        {
-            "courses_dept": "adhe",
-            "courses_id": "329",
-            "courses_avg": 96.11
         }
     ]
 }
