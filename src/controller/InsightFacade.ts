@@ -56,16 +56,8 @@ export default class InsightFacade implements IInsightFacade {
         let path = "./data/" + "courses";
         let fs = require("fs-extra");
 
-        if (this.idList.includes(id)) {
-            if (!fs.existsSync(path) || !fs.existsSync(path + "/" + id + ".json")) {
-                return Promise.reject(new NotFoundError("Data not found on disk"));
-            }
-
-            try {
-                fs.unlinkSync(path + "/" + id + ".json");
-            } catch (err) {
-                return Promise.reject(new NotFoundError("Could not unlink dataset"));
-            }
+        if (this.idList.includes(id) || fs.existsSync(path) || fs.existsSync(path + "/" + id + ".json")) {
+            fs.unlinkSync(path + "/" + id + ".json");
 
             this.idList = this.idList.filter((val: string) => {
                 if (val !== id) {

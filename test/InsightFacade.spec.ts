@@ -71,7 +71,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
     // This is a unit test. You should create more like this!
     it("Should add a valid dataset", function () {
-        const id: string = "courses";
+        const id: string = "courses2";
         const expected: string[] = [id];
 
         return insightFacade
