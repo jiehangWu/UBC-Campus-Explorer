@@ -19,7 +19,7 @@ interface ICourse {
 function parseFileContents(fileContents: any[]): Promise<ICourse[]> {
     let courses: ICourse[] = [];
     for (let fileContent of fileContents) {
-        if (fileContent === null || fileContent["result"] === null || !("result" in fileContent)) {
+        if (fileContent === null || fileContent["result"].length === 0 || !("result" in fileContent)) {
             continue;
         }
 

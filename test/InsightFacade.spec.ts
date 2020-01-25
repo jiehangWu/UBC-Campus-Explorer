@@ -229,6 +229,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 expect(result).to.deep.equal(expected);
             })
             .catch((err: any) => {
+                Log.error(err);
                 expect.fail(err, expected, "Should not be rejected");
             });
     });
@@ -316,8 +317,8 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given an invalid id with only whitespace when removing a dataset", function () {
-        const id: string = "";
+    it("Should throw InsightError given an invalid id with only whitespace when removing a dataset", function () {
+        const id: string = "     ";
 
         return insightFacade
             .removeDataset(id)

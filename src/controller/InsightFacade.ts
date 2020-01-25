@@ -58,14 +58,13 @@ export default class InsightFacade implements IInsightFacade {
 
         if (this.idList.includes(id)) {
             if (!fs.existsSync(path) || !fs.existsSync(path + "/" + id + ".json")) {
-                return Promise.reject(new InsightError("Data not found on disk"));
+                return Promise.reject(new NotFoundError("Data not found on disk"));
             }
 
             try {
                 fs.unlinkSync(path + "/" + id + ".json");
-                fs.removeSync(path);
             } catch (err) {
-                return Promise.reject(new InsightError("Could not unlink dataset"));
+                return Promise.reject(new NotFoundError("Could not unlink dataset"));
             }
 
             this.idList = this.idList.filter((val: string) => {
