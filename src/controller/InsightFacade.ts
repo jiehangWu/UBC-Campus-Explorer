@@ -57,6 +57,10 @@ export default class InsightFacade implements IInsightFacade {
         let fs = require("fs-extra");
 
         if (this.idList.includes(id)) {
+            if (!fs.existsSync(path) || !fs.existsSync(path + "/" + id + ".json")) {
+                return Promise.reject(new InsightError("Data not found on disk"));
+            }
+
             try {
                 fs.unlinkSync(path + "/" + id + ".json");
                 fs.removeSync(path);
@@ -100,12 +104,10 @@ export default class InsightFacade implements IInsightFacade {
             return false;
         }
         // check if a string contains only whitespaces
-        for (let i = 0; i < id.length; i++) {
-            if (id.charAt(i) !== " ") {
-                return true;
-            }
+        if (id.trim() === "" || id === "") {
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
