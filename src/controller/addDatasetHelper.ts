@@ -63,7 +63,7 @@ function validateSection(section: any): boolean {
 
 function saveToDisk(id: string, courses: ICourse[]): void {
     let fs = require("fs");
-    let dir = "./data/" + id;
+    let dir = "./data/" + "courses";
 
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);

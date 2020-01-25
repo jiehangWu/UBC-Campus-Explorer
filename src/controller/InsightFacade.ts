@@ -53,7 +53,7 @@ export default class InsightFacade implements IInsightFacade {
             return Promise.reject(new InsightError("This id is invalid"));
         }
 
-        let path = "./data/" + id;
+        let path = "./data/" + "courses";
         let fs = require("fs-extra");
 
         if (this.idList.includes(id)) {

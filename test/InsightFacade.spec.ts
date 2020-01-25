@@ -70,7 +70,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     // This is a unit test. You should create more like this!
-    it("Should add a valid dataset", function () {
+    it.only("Should add a valid dataset", function () {
         const id: string = "courses";
         const expected: string[] = [id];
 
@@ -85,13 +85,13 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    // it.only("Should add multiple dataset", function () {
-    //     const id1: string = "courses";
-    //     const id2: string = "courses2";
+    it.only("Should add multiple dataset", function () {
+        const id1: string = "courses";
+        const id2: string = "courses2";
 
-    //     insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses);
-    //     insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses);
-    // });
+        insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses);
+        insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses);
+    });
 
     it("Should throw InsightError when adding a dataset to a existing id", function () {
         const id: string = "courses";
@@ -281,7 +281,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
     // Remove tests start from here
     // --------------------------------------------------------------------------------
-    it.only("Should be able to remove a existing dataset given a valid id", function () {
+    it("Should be able to remove a existing dataset given a valid id", function () {
         const id: string = "courses";
 
         return insightFacade
@@ -303,7 +303,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given an invalid id with underscore when removing a dataset", function () {
+    it("Should throw InsightError given an invalid id with underscore when removing a dataset", function () {
         const id: string = "cour_ses";
 
         return insightFacade
@@ -316,7 +316,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given an invalid id with only whitespace when removing a dataset", function () {
+    it("Should throw InsightError given an invalid id with only whitespace when removing a dataset", function () {
         const id: string = " ";
 
         return insightFacade
@@ -329,7 +329,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given a NULL id when removing a dataset", function () {
+    it("Should throw InsightError given a NULL id when removing a dataset", function () {
         const id: string = null;
 
         return insightFacade
@@ -342,7 +342,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw InsightError given an undefined id when removing a dataset", function () {
+    it("Should throw InsightError given an undefined id when removing a dataset", function () {
         const id: string = undefined;
 
         return insightFacade
@@ -355,7 +355,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
     });
 
-    it.only("Should throw NotFoundError when removing a dataset that is not added given a valid id", function () {
+    it("Should throw NotFoundError when removing a dataset that is not added given a valid id", function () {
         const id: string = "courses";
 
         return insightFacade
