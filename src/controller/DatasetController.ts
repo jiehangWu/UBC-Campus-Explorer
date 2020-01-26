@@ -1,6 +1,7 @@
 import { InsightDatasetKind, InsightError, InsightDataset, NotFoundError } from "./IInsightFacade";
 import { JSZipObject } from "jszip";
 import * as JSZip from "jszip";
+import * as fs from "fs-extra";
 
 interface ICourse {
     dept: string;
@@ -68,7 +69,6 @@ export class DatasetController {
     }
 
     private saveToDisk(id: string, courses: ICourse[]): void {
-        let fs = require("fs");
         let dir = "./data/" + "courses";
 
         if (!fs.existsSync(dir)) {
@@ -146,14 +146,13 @@ export class DatasetController {
         }
 
         let path = "./data/" + "courses";
-        let fs = require("fs-extra");
 
         if (this.datasets.has(id)) {
-            fs.unlinkSync(path + "/" + id + ".json", (err: any) => {
-                if (err) {
-                    return Promise.reject(new InsightError("Could not unlink dataset"));
-                }
-            });
+            try {
+                fs.unlinkSync(path + "/" + id + ".json");
+            } catch (err) {
+                return Promise.reject(new InsightError("Could not unlink file"));
+            }
 
             this.datasets.delete(id);
 
