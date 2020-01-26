@@ -9,7 +9,7 @@ import { DatasetController } from "./DatasetController";
  */
 
 export default class InsightFacade implements IInsightFacade {
-    private datasetController: DatasetController;
+    public datasetController: DatasetController;
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");

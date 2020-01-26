@@ -148,10 +148,12 @@ export class DatasetController {
         let path = "./data/" + "courses";
         let fs = require("fs-extra");
 
-        if (this.datasets.has(id) || fs.existsSync(path)
-        || fs.existsSync(path + "/" + id + ".json")) {
-
-            fs.unlinkSync(path + "/" + id + ".json");
+        if (this.datasets.has(id)) {
+            fs.unlinkSync(path + "/" + id + ".json", (err: any) => {
+                if (err) {
+                    return Promise.reject(new InsightError("Could not unlink dataset"));
+                }
+            });
 
             this.datasets.delete(id);
 

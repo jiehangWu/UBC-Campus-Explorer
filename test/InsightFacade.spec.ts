@@ -291,6 +291,10 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 return insightFacade
                     .removeDataset(id)
                     .then((result: string) => {
+                        if (fs.existsSync("./data/" + id + "/" + id + ".json")) {
+                            expect.fail();
+                        }
+                        expect(Array.from(insightFacade.datasetController.datasets.keys())).to.not.include(id);
                         expect(result).to.deep.equal(id);
                     })
                     .catch((err: any) => {
