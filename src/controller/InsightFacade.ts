@@ -1,7 +1,7 @@
 import Log from "../Util";
 import { IInsightFacade, InsightDataset, InsightDatasetKind } from "./IInsightFacade";
 import { InsightError, NotFoundError } from "./IInsightFacade";
-import { addCourseDataset } from "./addDatasetHelper";
+import { DatasetController } from "./DatasetController";
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -9,32 +9,29 @@ import { addCourseDataset } from "./addDatasetHelper";
  */
 
 export default class InsightFacade implements IInsightFacade {
-    public idList: string[];
-    public datasets: InsightDataset[];
+    private datasetController: DatasetController;
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
-        this.idList = [];
-        this.datasets = [];
+        this.datasetController = new DatasetController();
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-        if (this.validateId(id)) {
+        if (this.datasetController.validateId(id)) {
             // check if id has already been added
-            if (this.idList.includes(id)) {
+            if (this.datasetController.datasets.has(id)) {
                 return Promise.reject(new InsightError("Database already contains the same id"));
             }
 
             if (kind === InsightDatasetKind.Courses) {
-                return addCourseDataset(id, content, kind)
+                return this.datasetController.addCourseDataset(id, content, kind)
                     .then((result: any) => {
-                        this.idList.push(result[0]);
-                        this.datasets.push({
-                            id: result[0],
-                            kind: InsightDatasetKind.Courses,
-                            numRows: result[1],
-                        });
-                        return Promise.resolve(this.idList);
+                        this.datasetController.datasets.set(result[0],
+                            {   id: id,
+                                kind: kind,
+                                numRows: result[1]
+                            });
+                        return Promise.resolve(Array.from(this.datasetController.datasets.keys()));
                     })
                     .catch((err: any) => {
                         return Promise.reject(err);
@@ -49,32 +46,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        if (!this.validateId(id)) {
-            return Promise.reject(new InsightError("This id is invalid"));
-        }
-
-        let path = "./data/" + "courses";
-        let fs = require("fs-extra");
-
-        if (this.idList.includes(id) || fs.existsSync(path) || fs.existsSync(path + "/" + id + ".json")) {
-            fs.unlinkSync(path + "/" + id + ".json");
-
-            this.idList = this.idList.filter((val: string) => {
-                if (val !== id) {
-                    return val;
-                }
-            });
-
-            this.datasets = this.datasets.filter((dataset: InsightDataset) => {
-                if (dataset.id !== id) {
-                    return dataset;
-                }
-            });
-
-            return Promise.resolve(id);
-        } else {
-            return Promise.reject(new NotFoundError("ID is not in the dataset"));
-        }
+        return this.datasetController.removeDataset(id);
     }
 
     public performQuery(query: any): Promise<any[]> {
@@ -82,23 +54,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public listDatasets(): Promise<InsightDataset[]> {
-        return Promise.resolve(this.datasets);
+        return Promise.resolve(Array.from(this.datasetController.datasets.values()));
     }
 
-    private validateId(id: string): boolean {
-        // check if id is null or undefined
-        if (typeof id === "undefined" || id === null) {
-            return false;
-        }
-        // "_" should not be included in id
-        if (id.includes("_")) {
-            return false;
-        }
-        // check if a string contains only whitespaces
-        if (id.trim() === "" || id === "") {
-            return false;
-        }
-
-        return true;
-    }
 }

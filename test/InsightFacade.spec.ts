@@ -427,10 +427,12 @@ describe("InsightFacade Add/Remove Dataset", function () {
                         expect(res).to.deep.equal(expected);
                     })
                     .catch((err: any) => {
+                        Log.error(err);
                         expect.fail(err, expected, "Should not be rejected");
                     });
             })
             .catch((err: any) => {
+                Log.error(err);
                 expect.fail(err, [id], "Should not be rejected");
             });
     });
