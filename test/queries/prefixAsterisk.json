@@ -1,0 +1,36 @@
+{
+    "title": "Asterisk is the prefix of the inputstring",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_dept": "*cpsc"
+                    }
+                },
+                {
+                    "EQ": {
+                        "courses_avg": 80
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_title",
+                "courses_year"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result": [
+        {
+            "courses_title": "m.sc major essay",
+            "courses_year": 2009
+        },
+        {
+            "courses_title": "m.sc major essay",
+            "courses_year": 1900
+        }
+    ]
+}

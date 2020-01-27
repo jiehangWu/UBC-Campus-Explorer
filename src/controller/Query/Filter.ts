@@ -49,7 +49,9 @@ export class Filter {
             let array: any[] = this.whereBlock.AND;
             let newArray: Filter[] = [];
             array.forEach((element) => {
+
                 newArray.push(new Filter({ WHERE: element }));
+
             });
 
             this.AND = newArray;
@@ -72,7 +74,9 @@ export class Filter {
             let array: any[] = this.whereBlock.OR;
             let newArray: Filter[] = [];
             array.forEach((element) => {
+
                 newArray.push(new Filter({ WHERE: element }));
+
             });
 
             this.OR = newArray;
@@ -133,6 +137,7 @@ export class Filter {
         if (Object.keys(this.whereBlock.NOT).length !== 1) { throw new InsightError("not 1 field"); }
         let query: any = { WHERE: this.whereBlock.NOT };
         let newFilter: Filter = new Filter(query);
+
         this.NOT = newFilter;
         this.NOT.validateFilter();
 
@@ -160,7 +165,9 @@ export class Filter {
             let array: any[] = this.whereBlock.AND;
             let newArray: Filter[] = [];
             array.forEach((element) => {
+
                 newArray.push(new Filter({ WHERE: element }));
+
             });
             this.AND = newArray;
             const ANDarrary: boolean[] = this.AND.map((element) => element.parseFilter(datapoint));
@@ -172,7 +179,9 @@ export class Filter {
             let array: any[] = this.whereBlock.OR;
             let newArray: Filter[] = [];
             array.forEach((element) => {
+
                 newArray.push(new Filter({ WHERE: element }));
+
             });
             this.OR = newArray;
             const ORarrary: boolean[] = this.OR.map((element) => element.parseFilter(datapoint));
@@ -201,11 +210,14 @@ export class Filter {
     public parseSComparators(datapoint: any): boolean {
         let skey =  new SKey(this.comparedField);
         return skey.checkSfield(datapoint);
+
     }
 
     public parseNegationComparators(datapoint: any): boolean {
         let query: any = { WHERE: this.whereBlock.NOT };
+
         let newFilter: Filter = new Filter(query);
+
         this.NOT = newFilter;
         return !this.NOT.parseFilter(datapoint);
     }

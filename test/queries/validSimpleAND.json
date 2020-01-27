@@ -1,0 +1,33 @@
+{
+    "title": "Simple valid query that tests AND",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "EQ": {
+                        "courses_avg": 60.05
+                    }
+                },
+                {
+                    "LT": {
+                        "courses_fail": 50.20
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_pass"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result": [
+        {
+            "courses_pass": 15
+        },
+        {
+            "courses_pass": 15
+        }
+    ]
+}
