@@ -476,7 +476,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         const id1: string = "coursses";
         return insightFacade.addDataset(id0, datasets[id0], InsightDatasetKind.Courses)
         .then(() => {
-        return insightFacade.removeDataset(id1);
+            return insightFacade.removeDataset(id1);
         })
         .then((result: string) => {
             expect.fail("Should have rejected");
@@ -491,7 +491,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         const id: string = " ";
         return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses)
         .then(() => {
-        return insightFacade.removeDataset(id);
+            return insightFacade.removeDataset(id);
         })
         .then((result: string) => {
             expect.fail("Should have rejected");
