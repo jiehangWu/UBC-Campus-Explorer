@@ -81,7 +81,7 @@ export default class Query {
             final.push(filtered);
 
             });
-            return final;
+        return final;
     }
 
 }

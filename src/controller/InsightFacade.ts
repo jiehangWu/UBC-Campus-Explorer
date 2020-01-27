@@ -24,8 +24,6 @@ export default class InsightFacade implements IInsightFacade {
         return Promise.reject("Not implemented");
     }
 
-//  todo: 1 if dataset not added? 2 put in dataset 3 display field 4 order 5 asterisk
-
     public performQuery(query: any): Promise <any[]> {
         try {
 
@@ -43,7 +41,7 @@ export default class InsightFacade implements IInsightFacade {
             }
             // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile
             let address = ("./data/courses/").concat(queriedID).concat(".json");
-            let rawData = fs.readFileSync(address);
+            let rawData: any = fs.readFileSync(address);
             let dataSet = JSON.parse(rawData);
             let res = q1.processQuery(dataSet);
             return Promise.resolve(res);
