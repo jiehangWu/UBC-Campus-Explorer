@@ -1,30 +1,23 @@
 import { InsightError } from "../IInsightFacade";
 
-export class SKey {
+export class MKey {
     public key: string;
     public idString: string;
     public field: string;
-    public value: string;
+    public value: any;
     public dataset: string[] = ["courses"];
-    public sfields: string[] =  ["dept" , "id" , "instructor" , "title" , "uuid"];
+    public mfields: string[] = ["avg" , "pass" , "fail" , "audit" , "year"];
 
     public constructor(pair: any) {
         this.key = Object.keys(pair)[0];
         this.splitPair(this.key);
-        this.value = Object.values(pair)[0] as string;
+        this.value = Object.values(pair)[0];
     }
 
     public validate() {
-        // this.updateSkey();
-        this.validateSField();
+        this.validateMField();
         this.validateIDString();
     }
-
-    // public updateSkey() {
-    //     this.key = Object.keys(this)[0];
-    //     this.splitPair(this.key);
-    //     this.value = Object.values(this)[0];
-    // }
 
     public splitPair(pair: string) {
         const str = pair.split("_", 2);
@@ -37,14 +30,19 @@ export class SKey {
             throw new InsightError("Referenced dataset coures not added yet");
         }
     }
-    public validateSField() {
-        if (! this.sfields.includes(this.field)) {
+
+    public validateMField() {
+        if (! this.mfields.includes(this.field)) {
             throw new InsightError("Invalid key courses_xxx in COLUMNS"); }
-        if (typeof this.value !== "string") {
-            throw new InsightError("wrong type in Sfield"); }
+        if (typeof this.value !== "number") {
+            throw new InsightError("wrong type in Mfield"); }
         }
 
-        public getIDstring(): string {
-            return this.idString;
-        }
+    public parseMComparator (dataPoint: any) {
+        return dataPoint[this.key] === this.value;
+    }
+
+    public getIDstring(): string {
+        return this.idString;
+    }
 }
