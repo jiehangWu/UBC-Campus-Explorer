@@ -36,11 +36,12 @@ export class DatasetController {
                 if (!this.validateSection(section)) {
                     continue;
                 }
-                let year;
-                if (section["Year"] === "overall") {
+
+                let year: number;
+                if (section["Section"] === "overall") {
                     year = 1900;
                 } else {
-                    year = section["Year"];
+                    year = Number(section["Year"]);
                 }
                 courses.push({
                     dept: section["Subject"],
@@ -65,7 +66,8 @@ export class DatasetController {
             && ("Avg" in section) && ("Professor" in section)
             && ("Title" in section) && ("Pass" in section)
             && ("Fail" in section) && ("Audit" in section)
-            && ("id" in section) && ("Year" in section);
+            && ("id" in section) && ("Year" in section)
+            && ("Section" in section);
     }
 
     private saveToDisk(id: string, courses: ICourse[]): void {
