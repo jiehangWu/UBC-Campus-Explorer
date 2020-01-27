@@ -4,6 +4,7 @@ import {InsightError, NotFoundError} from "./IInsightFacade";
 import { rejects } from "assert";
 import Query from "./Query/Query";
 import { addCourseDataset } from "./addDatasetHelper";
+import { promises } from "dns";
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -13,13 +14,6 @@ export default class InsightFacade implements IInsightFacade {
     public idList: string[];
     private datasets: InsightDataset[];
     // tslint:disable-next-line:object-literal-key-quotes
-    private testdataset: any[] = [{"dept": "adhe", "id": "504", "avg": 96.12,
-    // tslint:disable-next-line:object-literal-key-quotes
-    "instructor": "", "title": "rsrch methdlgy", "pass": 9, "fail": 0, "audit": 9, "uuid": 31379, "year": "2015"},
-    // tslint:disable-next-line:object-literal-key-quotes
-    { "dept": "aanb", "id": "504", "avg": 94.44, "instructor": "", "title": "rsrch methdlgy",
-    // tslint:disable-next-line:object-literal-key-quotes
-    "pass": 9, "fail": 0, "audit": 9, "uuid": 31380, "year": "2015"}];
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
@@ -72,63 +66,55 @@ export default class InsightFacade implements IInsightFacade {
             } catch (err) {
                 return Promise.reject(new InsightError("Could not unlink dataset"));
             }
-
             this.idList = this.idList.filter((val: string) => {
                 if (val !== id) {
                     return val;
                 }
             });
-
             this.datasets = this.datasets.filter((dataset: InsightDataset) => {
                 if (dataset.id !== id) {
                     return dataset;
                 }
             });
-
             return Promise.resolve(id);
         } else {
             return Promise.reject(new NotFoundError("ID is not in the dataset"));
         }
     }
-// previous version
-//     public performQuery(query: any): Promise <any[]> {
-//         try {
-//         const q1 = new Query(query, this.datasets);
-//         q1.validate(query);
-//         // let res: any[] = []; // just for testing
-//         let res = q1.processQuery();
-//         return Promise.resolve(res);
-//         }   catch (err) {
-//             if (err instanceof ResultTooLargeError) {
-//                 return Promise.reject(new ResultTooLargeError(err));
-//             } else if (err instanceof InsightError) {
-//                 return Promise.reject(new InsightError(err));
-//       } else { return Promise.reject(err); }
-//     }
-// }
+
+//  todo: 1 if dataset not added? 2 put in dataset 3 display field 4 order 5 asterisk
 
     public performQuery(query: any): Promise <any[]> {
         try {
-            // const fs = require("fs");
-            // let content: any[] = [];
-            // // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile
-            // fs.readFile("./data/courses/courses.json", function read(err: any, data: any) {
-            //     if (err) {
-            //         throw err;
-            //     }
-            //     content = data; });
-            const q1 = new Query(query, this.testdataset);
-            q1.validate(query);
-            let res = q1.processQuery();
+
+            const q1 = new Query(query);
+            q1.validate();
+            // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
+            let queriedID: string = "";
+            if (q1.IDstrings.every( (val, i, arr) => val === arr[0] )   ) {
+                queriedID = q1.IDstrings[0];
+            } else {
+                throw new InsightError("Cannot query multiple datasets");
+            }
+            if (! this.idList.includes(queriedID)) {
+                throw new InsightError("Referenced data not added");
+            }
+            const fs = require("fs");
+            // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile
+            let address = ("./data/courses/").concat(queriedID).concat(".json");
+            let rawData = fs.readFileSync(address);
+            let dataSet = JSON.parse(rawData);
+            let res = q1.processQuery(dataSet);
             return Promise.resolve(res);
         }   catch (err) {
             if (err instanceof ResultTooLargeError) {
                 return Promise.reject(new ResultTooLargeError(err));
             } else if (err instanceof InsightError) {
                 return Promise.reject(new InsightError(err));
-    } else { return Promise.reject(err); }
+        } else { return Promise.reject(err); }
+        }
     }
-    }
+
     public listDatasets(): Promise<InsightDataset[]> {
         return Promise.resolve(this.datasets);
     }

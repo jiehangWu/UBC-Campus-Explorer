@@ -5,14 +5,14 @@ import { SKey } from "./SKeyFieldPair";
 
         // deal with * inputString; todo
 
-export class MyFILTER {
-    public AND: MyFILTER[];
-    public OR: MyFILTER[];
+export class FILTER {
+    public AND: FILTER[];
+    public OR: FILTER[];
     public GT: MKey;
     public EQ: MKey;
     public LT: MKey;
     public IS: SKey;
-    public NOT: MyFILTER;
+    public NOT: FILTER;
     public LogicComparators: string[] = ["AND", "OR"];
     public MComparators: string[] = ["GT", "EQ", "LT"];
     public comparator: string;
@@ -28,10 +28,13 @@ export class MyFILTER {
     public validateFilter() {
         if (this.LogicComparators.indexOf(this.comparator) >= 0 ) {
             this.validateLogicalComparators();
+
         } else if (this.MComparators.indexOf(this.comparator) >= 0) {
             this.validateMComparators();
+
         } else if (this.comparator === "IS") {
             this.validateSComparators();
+
         } else if (this.comparator === "NOT") {
             this.validateNegationComparators();
         } else                        {throw new InsightError("Wrong filter key"); }
@@ -41,28 +44,22 @@ export class MyFILTER {
     public validateLogicalComparators() {
         if (this.comparator === "AND")   {
             let array: any[] = this.whereBlock.AND;
-            let newArray: MyFILTER[] = [];
+            let newArray: FILTER[] = [];
             array.forEach((element) => {
-                newArray.push(new MyFILTER({WHERE: element })); });
+                newArray.push(new FILTER({WHERE: element })); });
             this.AND = newArray;
             if (this.AND.length === 0 ) {throw new InsightError("empty AND"); }
-            this.AND.forEach(function (element: MyFILTER) {
-                // let query: any = {WHERE: element};
-                // let newFilter: MyFILTER = new MyFILTER(query.WHERE);
-                // newFilter.validateFilter(); }); }
+            this.AND.forEach(function (element: FILTER) {
                 element.validateFilter(); }); }
 
         if (this.comparator === "OR")   {
             let array: any[] = this.whereBlock.OR;
-            let newArray: MyFILTER[] = [];
+            let newArray: FILTER[] = [];
             array.forEach((element) => {
-                newArray.push(new MyFILTER({WHERE: element })); });
+                newArray.push(new FILTER({WHERE: element })); });
             this.OR = newArray;
             if (this.OR.length === 0 ) {throw new InsightError("empty OR"); }
-            this.OR.forEach(function (element: MyFILTER) {
-                // let query: any = {WHERE: element};
-                // let newFilter: MyFILTER = new MyFILTER(query.WHERE);
-                // newFilter.validateFilter(); }); }
+            this.OR.forEach(function (element: FILTER) {
                 element.validateFilter(); }); }
     }
 
@@ -99,7 +96,7 @@ export class MyFILTER {
 
         if (Object.keys(this.whereBlock.NOT).length !== 1)          {throw new InsightError("not 1 field"); }
         let query: any = {WHERE: this.whereBlock.NOT};
-        let newFilter: MyFILTER = new MyFILTER(query);
+        let newFilter: FILTER = new FILTER(query);
         this.NOT = newFilter;
         this.NOT.validateFilter();
     }
@@ -123,9 +120,9 @@ export class MyFILTER {
         if (this.comparator === "AND") {
             let flag: boolean = true;
             let array: any[] = this.whereBlock.AND;
-            let newArray: MyFILTER[] = [];
+            let newArray: FILTER[] = [];
             array.forEach((element) => {
-                newArray.push(new MyFILTER({WHERE: element })); });
+                newArray.push(new FILTER({WHERE: element })); });
             this.AND = newArray;
             const ANDarrary: boolean[] = this.AND.map((element) => element.parseFilter(datapoint));
             ANDarrary.forEach((parsedFilter) => flag = flag && parsedFilter);
@@ -134,9 +131,9 @@ export class MyFILTER {
         if (this.comparator === "OR") {
             let flag: boolean = false;
             let array: any[] = this.whereBlock.OR;
-            let newArray: MyFILTER[] = [];
+            let newArray: FILTER[] = [];
             array.forEach((element) => {
-                newArray.push(new MyFILTER({WHERE: element })); });
+                newArray.push(new FILTER({WHERE: element })); });
             this.OR = newArray;
             const ORarrary: boolean[] = this.OR.map((element) => element.parseFilter(datapoint));
             ORarrary.forEach((parsedFilter) => flag = flag || parsedFilter);
@@ -172,7 +169,7 @@ export class MyFILTER {
 
     public parseNegationComparators(datapoint: any): boolean {
         let query: any = {WHERE: this.whereBlock.NOT};
-        let newFilter: MyFILTER = new MyFILTER(query);
+        let newFilter: FILTER = new FILTER(query);
         this.NOT = newFilter;
         return ! this.NOT.parseFilter(datapoint);
     }
