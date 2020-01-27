@@ -43,4 +43,8 @@ export class SKey {
         if (typeof this.value !== "string") {
             throw new InsightError("wrong type in Sfield"); }
         }
+
+        public getIDstring(): string {
+            return this.idString;
+        }
 }

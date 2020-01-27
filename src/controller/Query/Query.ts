@@ -29,11 +29,6 @@ export default class Query {
     }
 
     public validate() {
-        this.syntaxCheck();
-        this.semanticCheck();
-    }
-
-    public syntaxCheck() {
         this.validateBody();
         this.validateOptions();
         this.IDstrings = this.IDstrings.concat(this.WHERE.IDstrings, this.OPTIONS.IDstrings);
@@ -45,12 +40,6 @@ export default class Query {
     }
     public validateOptions() {
         this.OPTIONS.validateColumns();
-        // if ("COLUMNS" ! in query)           {throw new InsightError("missing columns"); }
-        // this.validateColumns(query.OPTIONS);
-        // // // if (order exists)
-        // // checkOrder
-        // const l1 = Object.keys(query.OPTIONS.Column).length;
-        // if (l1 > 2 || l1 < 1 ) {   throw new InsightError(""); }
     }
 
     public validateColumns(columns: any) {
@@ -59,18 +48,6 @@ export default class Query {
         if ( " " in columns) {throw new InsightError("Cannot read property 'GROUP' of undefined"); }
     }
 
-    // detect multiple datast
-    public semanticCheck(): boolean {
-        let flag: boolean = true;
-        //  check courses_avg right or not
-            // this.keyset.forEach(element => {
-                //
-            // });
-        return flag;
-// todo: link this to key fields in the program
-        //   wrong field  eg courses_avgg
-
-    }
 
     public validateDataset(key: string) {
         const str = key.split("_", 2);

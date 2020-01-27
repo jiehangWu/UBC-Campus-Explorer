@@ -48,4 +48,8 @@ export class MKey {
     public parseMComparator (dataPoint: any) {
         return dataPoint[this.key] === this.value;
     }
+
+    public getIDstring(): string {
+        return this.idString;
+    }
 }

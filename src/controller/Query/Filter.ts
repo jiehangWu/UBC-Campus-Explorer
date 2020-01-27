@@ -18,23 +18,22 @@ export class FILTER {
     public comparator: string;
     public comparedField: any;
     public whereBlock: any;
+    public IDstrings: string[];
 
     public constructor(query: any) {
         this.whereBlock = query.WHERE;
         this.comparator = Object.keys(this.whereBlock)[0];
         this.comparedField = Object.values(this.whereBlock)[0];
+        this.IDstrings = [];
     }
 
     public validateFilter() {
         if (this.LogicComparators.indexOf(this.comparator) >= 0 ) {
             this.validateLogicalComparators();
-
         } else if (this.MComparators.indexOf(this.comparator) >= 0) {
             this.validateMComparators();
-
         } else if (this.comparator === "IS") {
             this.validateSComparators();
-
         } else if (this.comparator === "NOT") {
             this.validateNegationComparators();
         } else                        {throw new InsightError("Wrong filter key"); }
@@ -49,8 +48,16 @@ export class FILTER {
                 newArray.push(new FILTER({WHERE: element })); });
             this.AND = newArray;
             if (this.AND.length === 0 ) {throw new InsightError("empty AND"); }
-            this.AND.forEach(function (element: FILTER) {
-                element.validateFilter(); }); }
+
+            // dealing with Dataset ID
+            let IDs: string[] = [];
+            this.OR.forEach(function (element: FILTER) {
+                element.validateFilter();
+                IDs = IDs.concat(element.IDstrings);
+                if (! ["AND", "NOT", "OR"].includes(element.comparator)) {
+                IDs = IDs.concat(element.IDstrings); } });
+            this.IDstrings = this.IDstrings.concat(IDs);
+        }
 
         if (this.comparator === "OR")   {
             let array: any[] = this.whereBlock.OR;
@@ -59,8 +66,15 @@ export class FILTER {
                 newArray.push(new FILTER({WHERE: element })); });
             this.OR = newArray;
             if (this.OR.length === 0 ) {throw new InsightError("empty OR"); }
+
+            let IDs: string[] = [];
             this.OR.forEach(function (element: FILTER) {
-                element.validateFilter(); }); }
+                element.validateFilter();
+                IDs = IDs.concat(element.IDstrings);
+                if (! ["AND", "NOT", "OR"].includes(element.comparator)) {
+                IDs = IDs.concat(element.IDstrings); } });
+            this.IDstrings = this.IDstrings.concat(IDs);
+        }
     }
 
     // todo : abstract
@@ -70,18 +84,35 @@ export class FILTER {
             if (Object.keys(this.GT).length !== 1)    {throw new InsightError("GT not 1 field"); }
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
-        }
+            this.IDstrings.push(pair.getIDstring());
+            // if (this.IDstring === undefined) {
+            //     this.IDstring = pair.getIDstring();
+            // } else if (this.IDstring !== pair.getIDstring()) {
+            //     throw new InsightError("cannot query multiple dataset"); }
+            }
+
         if (this.comparator === "EQ") {
             this.EQ = this.whereBlock.EQ;
             if (Object.keys(this.EQ).length !== 1)    {throw new InsightError("EQ not 1 field"); }
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
-        }
+            this.IDstrings.push(pair.getIDstring());
+            // if (this.IDstring === undefined) {
+            //     this.IDstring = pair.getIDstring();
+            // } else if (this.IDstring !== pair.getIDstring()) {
+            //     throw new InsightError("cannot query multiple dataset"); }
+            }
+
         if (this.comparator === "LT") {
             this.LT = this.whereBlock.LT;
             if (Object.keys(this.LT).length !== 1)    {throw new InsightError("LT not 1 field"); }
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
+            this.IDstrings.push(pair.getIDstring());
+        //     if (this.IDstring === undefined) {
+        //     this.IDstring = pair.getIDstring();
+        // } else if (this.IDstring !== pair.getIDstring()) {
+        //     throw new InsightError("cannot query multiple dataset"); }
         }
     }
 
@@ -90,6 +121,12 @@ export class FILTER {
         let pair: SKey = new SKey(this.comparedField);
         this.IS = pair;
         this.IS.validate();
+        this.IDstrings = [...this.IDstrings, pair.getIDstring()];
+        // this.IDstrings.push(pair.getIDstring());
+        // if (this.IDstring === undefined) {
+        //     this.IDstring = pair.getIDstring();
+        // } else if (this.IDstring !== pair.getIDstring()) {
+        //     throw new InsightError("cannot query multiple dataset"); }
     }
 
     public validateNegationComparators() {
@@ -99,6 +136,8 @@ export class FILTER {
         let newFilter: FILTER = new FILTER(query);
         this.NOT = newFilter;
         this.NOT.validateFilter();
+
+        // this.IDstrings.push(this.NOT.IDstrings);
     }
 
     public parseFilter(datapoint: any): boolean {
