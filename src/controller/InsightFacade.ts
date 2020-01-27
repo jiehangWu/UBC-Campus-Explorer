@@ -11,6 +11,7 @@ import * as fs from "fs-extra";
  */
 
 export default class InsightFacade implements IInsightFacade {
+
     public datasetController: DatasetController;
 
     constructor() {
@@ -53,6 +54,10 @@ export default class InsightFacade implements IInsightFacade {
 
     public listDatasets(): Promise<InsightDataset[]> {
         return Promise.resolve(Array.from(this.datasetController.datasets.values()));
+    }
+
+    public listDatasets(): Promise<InsightDataset[]> {
+        return Promise.reject("Not implemented");
     }
 
     public performQuery(query: any): Promise <any[]> {

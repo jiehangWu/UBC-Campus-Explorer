@@ -1,12 +1,12 @@
-import { FILTER } from "./Filter";
-// import { KEYFIELDPAIR, MKey, SKey } from "./KEYFIELDPAIR";
-import { OPTIONS } from "./Options";
-import { InsightError, InsightDataset } from "../IInsightFacade";
+import { Filter } from "./Filter";
+import { Options } from "./Options";
+import { InsightError, InsightDataset, ResultTooLargeError } from "../IInsightFacade";
+
 
 
 export default class Query {
-    public WHERE: FILTER;
-    public OPTIONS: OPTIONS;
+    public WHERE: Filter;
+    public OPTIONS: Options;
     public keyset: string[];
     public LogicComparators: string[] = ["AND", "OR"];
     public MComparators: string[] = ["GT", "EQ", "LT"];
@@ -22,12 +22,22 @@ export default class Query {
             throw new InsightError("missing WHERE");
         }
         if (!Object.keys(query).includes("OPTIONS")) { throw new InsightError("missing OPTIONS"); }
+
+        if (Object.keys(query.WHERE).length === 0) {
+            this.OPTIONS = new Options(query);
+            this.OPTIONS.validateColumns();
+            this.OPTIONS.validateOrder();
+            throw new ResultTooLargeError("result too large"); }
+
+
         if (Object.keys(query.WHERE).length !== 1) { throw new InsightError("WHERE should only have 1 key"); }
         if (typeof query.WHERE !== "object") { throw new InsightError("WHERE not an obj"); }
         if (this.keyset.length !== 2) { throw new InsightError("excess key"); }
 
-        this.WHERE = new FILTER(query);
-        this.OPTIONS = new OPTIONS(query);
+
+        this.WHERE = new Filter(query);
+        this.OPTIONS = new Options(query);
+
         this.IDstrings = [];
     }
 
@@ -76,8 +86,9 @@ export default class Query {
         //   https://stackoverflow.com/questions/38750705/filter-object-properties-by-key-in-es6
         results.forEach((result) => {
             let filtered = Object.keys(result)
-                .filter((key) => required.includes(key))
-                .reduce((obj: any, key) => {
+
+            .filter((key) => required.includes(key))
+            .reduce((obj: any, key) => {
                     obj[key] = result[key];
                     return obj;
                 }, {});
@@ -85,6 +96,7 @@ export default class Query {
             this.postProcess(filtered);
             final.push(filtered);
         });
+        final = this.OPTIONS.sort(final);
 
         return final;
     }

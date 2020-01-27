@@ -1,18 +1,19 @@
-import { MKey } from "./MKeyFieldPair";
+import { MKey } from "./MKey";
 import Query from "./Query";
 import { InsightError } from "../IInsightFacade";
-import { SKey } from "./SKeyFieldPair";
+import { SKey } from "./SKey";
+import { isNullOrUndefined } from "util";
 
 // deal with * inputString; todo
 
-export class FILTER {
-    public AND: FILTER[];
-    public OR: FILTER[];
+export class Filter {
+    public AND: Filter[];
+    public OR: Filter[];
     public GT: MKey;
     public EQ: MKey;
     public LT: MKey;
     public IS: SKey;
-    public NOT: FILTER;
+    public NOT: Filter;
     public LogicComparators: string[] = ["AND", "OR"];
     public MComparators: string[] = ["GT", "EQ", "LT"];
     public comparator: string;
@@ -24,6 +25,9 @@ export class FILTER {
         this.whereBlock = query.WHERE;
         this.comparator = Object.keys(this.whereBlock)[0];
         this.comparedField = Object.values(this.whereBlock)[0];
+        if (Object.keys(this.comparedField).length === 0 && this.comparedField.constructor === Object) {
+            throw new InsightError("no key in filter");
+        }
         this.IDstrings = [];
     }
 
@@ -43,9 +47,11 @@ export class FILTER {
     public validateLogicalComparators() {
         if (this.comparator === "AND") {
             let array: any[] = this.whereBlock.AND;
-            let newArray: FILTER[] = [];
+            let newArray: Filter[] = [];
             array.forEach((element) => {
-                newArray.push(new FILTER({ WHERE: element }));
+
+                newArray.push(new Filter({ WHERE: element }));
+
             });
 
             this.AND = newArray;
@@ -53,7 +59,7 @@ export class FILTER {
 
             // dealing with Dataset ID
             let IDs: string[] = [];
-            this.OR.forEach(function (element: FILTER) {
+            this.AND.forEach(function (element: Filter) {
                 element.validateFilter();
                 IDs = IDs.concat(element.IDstrings);
                 if (!["AND", "NOT", "OR"].includes(element.comparator)) {
@@ -66,16 +72,18 @@ export class FILTER {
 
         if (this.comparator === "OR") {
             let array: any[] = this.whereBlock.OR;
-            let newArray: FILTER[] = [];
+            let newArray: Filter[] = [];
             array.forEach((element) => {
-                newArray.push(new FILTER({ WHERE: element }));
+
+                newArray.push(new Filter({ WHERE: element }));
+
             });
 
             this.OR = newArray;
             if (this.OR.length === 0) { throw new InsightError("empty OR"); }
 
             let IDs: string[] = [];
-            this.OR.forEach(function (element: FILTER) {
+            this.OR.forEach(function (element: Filter) {
                 element.validateFilter();
                 IDs = IDs.concat(element.IDstrings);
 
@@ -97,10 +105,6 @@ export class FILTER {
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
             this.IDstrings.push(pair.getIDstring());
-            // if (this.IDstring === undefined) {
-            //     this.IDstring = pair.getIDstring();
-            // } else if (this.IDstring !== pair.getIDstring()) {
-            //     throw new InsightError("cannot query multiple dataset"); }
         }
 
         if (this.comparator === "EQ") {
@@ -109,10 +113,6 @@ export class FILTER {
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
             this.IDstrings.push(pair.getIDstring());
-            // if (this.IDstring === undefined) {
-            //     this.IDstring = pair.getIDstring();
-            // } else if (this.IDstring !== pair.getIDstring()) {
-            //     throw new InsightError("cannot query multiple dataset"); }
         }
 
         if (this.comparator === "LT") {
@@ -121,10 +121,6 @@ export class FILTER {
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
             this.IDstrings.push(pair.getIDstring());
-            //     if (this.IDstring === undefined) {
-            //     this.IDstring = pair.getIDstring();
-            // } else if (this.IDstring !== pair.getIDstring()) {
-            //     throw new InsightError("cannot query multiple dataset"); }
         }
     }
 
@@ -134,22 +130,18 @@ export class FILTER {
         this.IS = pair;
         this.IS.validate();
         this.IDstrings = [...this.IDstrings, pair.getIDstring()];
-        // this.IDstrings.push(pair.getIDstring());
-        // if (this.IDstring === undefined) {
-        //     this.IDstring = pair.getIDstring();
-        // } else if (this.IDstring !== pair.getIDstring()) {
-        //     throw new InsightError("cannot query multiple dataset"); }
     }
 
     public validateNegationComparators() {
 
         if (Object.keys(this.whereBlock.NOT).length !== 1) { throw new InsightError("not 1 field"); }
         let query: any = { WHERE: this.whereBlock.NOT };
-        let newFilter: FILTER = new FILTER(query);
+        let newFilter: Filter = new Filter(query);
+
         this.NOT = newFilter;
         this.NOT.validateFilter();
 
-        // this.IDstrings.push(this.NOT.IDstrings);
+        this.IDstrings = this.IDstrings.concat(this.NOT.IDstrings);
     }
 
     public parseFilter(datapoint: any): boolean {
@@ -171,9 +163,11 @@ export class FILTER {
         if (this.comparator === "AND") {
             let flag: boolean = true;
             let array: any[] = this.whereBlock.AND;
-            let newArray: FILTER[] = [];
+            let newArray: Filter[] = [];
             array.forEach((element) => {
-                newArray.push(new FILTER({ WHERE: element }));
+
+                newArray.push(new Filter({ WHERE: element }));
+
             });
             this.AND = newArray;
             const ANDarrary: boolean[] = this.AND.map((element) => element.parseFilter(datapoint));
@@ -183,9 +177,11 @@ export class FILTER {
         if (this.comparator === "OR") {
             let flag: boolean = false;
             let array: any[] = this.whereBlock.OR;
-            let newArray: FILTER[] = [];
+            let newArray: Filter[] = [];
             array.forEach((element) => {
-                newArray.push(new FILTER({ WHERE: element }));
+
+                newArray.push(new Filter({ WHERE: element }));
+
             });
             this.OR = newArray;
             const ORarrary: boolean[] = this.OR.map((element) => element.parseFilter(datapoint));
@@ -212,17 +208,16 @@ export class FILTER {
     }
 
     public parseSComparators(datapoint: any): boolean {
-        let skey = new SKey(this.comparedField);
-        // skey.updateSkey();
-        let searchField: string = skey.field;
-        let svalue = skey.value;
-        // https://stackoverflow.com/questions/2167602/optimum-way-to-compare-strings-in-javascript
-        return (svalue.localeCompare(datapoint[searchField]) === 0);
+        let skey =  new SKey(this.comparedField);
+        return skey.checkSfield(datapoint);
+
     }
 
     public parseNegationComparators(datapoint: any): boolean {
         let query: any = { WHERE: this.whereBlock.NOT };
-        let newFilter: FILTER = new FILTER(query);
+
+        let newFilter: Filter = new Filter(query);
+
         this.NOT = newFilter;
         return !this.NOT.parseFilter(datapoint);
     }
