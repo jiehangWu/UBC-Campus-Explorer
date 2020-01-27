@@ -1,0 +1,15 @@
+{
+    "title": "LT must be object",
+    "query": {
+        "WHERE": {
+            "LT": 90
+          },
+          "OPTIONS": {
+            "COLUMNS": [
+              "courses_pass"
+            ]
+          }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

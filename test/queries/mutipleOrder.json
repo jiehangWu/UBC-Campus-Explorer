@@ -1,0 +1,52 @@
+{
+    "title": "Should perform a query with a valid ORDER with multiple keys",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_dept": "cpsc"
+                    }
+                },
+                {
+                    "EQ": {
+                        "courses_year": 2016
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg",
+                "courses_id"
+            ],
+            "ORDER": "courses_dept",
+            "ORDER": "courses_avg",
+            "ORDER": "courses_id"
+        }
+    },
+    "isQueryValid": true,
+    "result": [
+        {
+            "courses_dept": "cpsc",
+            "courses_avg": 81.17,
+            "courses_id": "310"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_avg": 76.52,
+            "courses_id": "312"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_avg": 82.66,
+            "courses_id": "340"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_avg": 73.13,
+            "courses_id": "415"
+        }
+    ]
+}

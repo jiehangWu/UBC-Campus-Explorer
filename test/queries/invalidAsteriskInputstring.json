@@ -1,0 +1,27 @@
+{
+    "title": "Asterisk is the prefix of the inputstring",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_dept": "*c*psc*"
+                    }
+                },
+                {
+                    "EQ": {
+                        "courses_avg": 80
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_title",
+                "courses_year"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}
