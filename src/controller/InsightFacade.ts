@@ -13,7 +13,6 @@ import { promises } from "dns";
 export default class InsightFacade implements IInsightFacade {
     public idList: string[];
     private datasets: InsightDataset[];
-    // tslint:disable-next-line:object-literal-key-quotes
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
