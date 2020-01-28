@@ -100,44 +100,44 @@ export class DatasetController {
         return new Promise((resolve, reject) => {
             let jszip = new JSZip();
 
-            jszip.loadAsync(content, {base64: true})
+            jszip.loadAsync(content, { base64: true })
                 .then((zip) => {
-                // Load file to an array of promises
-                let promises: Array<Promise<string>> = [];
+                    // Load file to an array of promises
+                    let promises: Array<Promise<string>> = [];
 
-                zip.folder(id).forEach((_, file: JSZipObject) => {
-                    let fileContent = file.async("text")
-                        .then((body: string) => {
-                            return JSON.parse(body);
+                    zip.folder(id).forEach((_, file: JSZipObject) => {
+                        let fileContent = file.async("text")
+                            .then((body: string) => {
+                                return JSON.parse(body);
+                            })
+                            .catch((err: any) => {
+                                return null;
+                            });
+                        promises.push(fileContent);
+                    });
+
+                    Promise.all(promises)
+                        .then((fileContents: any[]) => {
+                            this.parseFileContents(fileContents)
+                                .then((courses: ICourse[]) => {
+                                    if (courses.length >= 1) {
+                                        this.saveToDisk(id, courses);
+                                        resolve([id, courses.length]);
+                                    } else {
+                                        reject(new InsightError("This dataset does not contain a valid section"));
+                                    }
+                                })
+                                .catch((err: any) => {
+                                    reject(new InsightError("This dataset does not contain a valid file"));
+                                });
                         })
                         .catch((err: any) => {
-                            return null;
+                            reject(err);
                         });
-                    promises.push(fileContent);
-                });
-
-                Promise.all(promises)
-                .then((fileContents: any[]) => {
-                    this.parseFileContents(fileContents)
-                    .then((courses: ICourse[]) => {
-                        if (courses.length >= 1) {
-                            this.saveToDisk(id, courses);
-                            resolve([id, courses.length]);
-                        } else {
-                            reject(new InsightError("This dataset does not contain a valid section"));
-                        }
-                    })
-                    .catch((err: any) => {
-                        reject(new InsightError("This dataset does not contain a valid file"));
-                    });
                 })
                 .catch((err: any) => {
-                    reject(err);
+                    reject(new InsightError("This file is not valid zip file"));
                 });
-            })
-            .catch((err: any) => {
-                reject(new InsightError("This file is not valid zip file"));
-            });
         });
     }
 

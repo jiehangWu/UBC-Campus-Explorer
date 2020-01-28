@@ -99,7 +99,7 @@ export class OPTIONS {
     }
 
     // https://www.sitepoint.com/sort-an-array-of-objects-in-javascript/
-    public sort(res: any[]): any[] {
+    public sort(res: any[]): void {
         const sortedField = this.processField(this.orderField);
 
         function compare(a: any, b: any) {
@@ -115,7 +115,7 @@ export class OPTIONS {
             return comparison;
         }
 
-        return res.sort(compare);
+        res.sort(compare);
 
     }
 

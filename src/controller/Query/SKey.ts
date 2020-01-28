@@ -55,7 +55,7 @@ export class SKey {
             }
         }
         if (flag === false) {
-            throw new InsightError("Wrong * placement");
+            throw new InsightError("Asterisk should only be at the beginning or end of the input string");
         }
     }
 

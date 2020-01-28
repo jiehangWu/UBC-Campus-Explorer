@@ -90,7 +90,7 @@ export default class Query {
                 final.push(filtered);
             });
 
-            final = this.OPTIONS.sort(final);
+            this.OPTIONS.sort(final);
 
             if (final.length > 5000) {
                 throw new ResultTooLargeError("> 5000");

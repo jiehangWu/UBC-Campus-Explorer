@@ -29,7 +29,8 @@ export default class InsightFacade implements IInsightFacade {
                 return this.datasetController.addCourseDataset(id, content, kind)
                     .then((result: any) => {
                         this.datasetController.datasets.set(result[0],
-                            {   id: id,
+                            {
+                                id: id,
                                 kind: kind,
                                 numRows: result[1]
                             });
@@ -55,9 +56,8 @@ export default class InsightFacade implements IInsightFacade {
         return Promise.resolve(Array.from(this.datasetController.datasets.values()));
     }
 
-    public performQuery(query: any): Promise <any[]> {
+    public performQuery(query: any): Promise<any[]> {
         try {
-
             const queryResult = new Query(query);
             queryResult.validate();
             // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
@@ -67,30 +67,22 @@ export default class InsightFacade implements IInsightFacade {
             if (queryResult.IDstrings.every((val, _, arr) => val === arr[0])) {
                 queriedID = queryResult.IDstrings[0];
             } else {
-                throw new InsightError("Cannot query multiple datasets");
+                return Promise.reject(new InsightError("Cannot query multiple datasets"));
             }
 
             if (!this.datasetController.datasets.has(queriedID)) {
-                throw new InsightError("Referenced data not added");
+                return Promise.reject(new InsightError("Referenced data not added"));
             }
 
             // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile.
             let path = "./data/courses/" + queriedID + ".json";
             let rawData: any = fs.readFileSync(path);
-            let dataSet = JSON.parse(rawData);
-            let res = queryResult.processQuery(dataSet);
+            let dataset = JSON.parse(rawData);
+            let res = queryResult.processQuery(dataset);
 
             return Promise.resolve(res);
-            } catch (err) {
-              if (err instanceof ResultTooLargeError) {
-                  return Promise.reject(new ResultTooLargeError(err));
-
-            } else if (err instanceof InsightError) {
-                return Promise.reject(new InsightError(err));
-
-            } else {
-                return Promise.reject(err);
-            }
+        } catch (err) {
+            return Promise.reject(err);
         }
     }
 
