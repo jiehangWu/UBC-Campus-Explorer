@@ -1,0 +1,26 @@
+{
+    "title": "Filter has no key whereas at least one key is expected",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {}
+                },
+                {
+                    "EQ": {
+                        "courses_year": 2016
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

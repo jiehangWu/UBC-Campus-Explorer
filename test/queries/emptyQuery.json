@@ -1,0 +1,6 @@
+{
+    "title": "Should throw InsightError when the query is empty and contains nothing",
+    "query": {},
+    "isQueryValid": false,
+    "result": "InsightError"
+}

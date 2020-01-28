@@ -19,18 +19,18 @@ export default class Query {
 
     //  check overall structure: 1. Where: missing/ empty
     private checkStructure(query: any) {
-        if (! this.keyset.includes("WHERE"))       { throw new InsightError("missing WHERE"); }
-        if (! this.keyset.includes("OPTIONS"))     { throw new InsightError("missing OPTIONS"); }
+        if (!this.keyset.includes("WHERE")) { throw new InsightError("missing WHERE"); }
+        if (!this.keyset.includes("OPTIONS")) { throw new InsightError("missing OPTIONS"); }
 
         if (Object.keys(query.WHERE).length === 0) {
             this.emptyWhere = true;
         } else {
-                this.emptyWhere = false;
-            }
+            this.emptyWhere = false;
+        }
 
-        if (Object.keys(query.WHERE).length > 1)    { throw new InsightError("WHERE should only have 1 key"); }
-        if (typeof query.WHERE !== "object")        { throw new InsightError("WHERE not an obj"); }
-        if (this.keyset.length !== 2)               { throw new InsightError("excess key"); }
+        if (Object.keys(query.WHERE).length > 1) { throw new InsightError("WHERE should only have 1 key"); }
+        if (typeof query.WHERE !== "object") { throw new InsightError("WHERE not an obj"); }
+        if (this.keyset.length !== 2) { throw new InsightError("excess key"); }
 
         if (this.emptyWhere === false) {
             this.WHERE = new Filter(query);
@@ -41,9 +41,9 @@ export default class Query {
 
     public validate() {
         if (this.emptyWhere === false) {
-        this.WHERE.validateFilter();
-        this.IDstrings = this.IDstrings.concat(this.WHERE.IDstrings);
-    }
+            this.WHERE.validateFilter();
+            this.IDstrings = this.IDstrings.concat(this.WHERE.IDstrings);
+        }
         this.OPTIONS.validateColumns();
 
         this.IDstrings = this.OPTIONS.IDstrings;
@@ -65,38 +65,38 @@ export default class Query {
             if (this.datasets.length > 5000) {
                 throw new ResultTooLargeError(">5000");
             } else {
-            return dataset;
+                return dataset;
             }
-        } else  { if (this.emptyWhere === false) {
-        this.datasets.forEach((element) => {
-            if (this.WHERE.parseFilter(element)) {
-                results.push(element);
-            }
-        });
+        } else {
+            this.datasets.forEach((element) => {
+                if (this.WHERE.parseFilter(element)) {
+                    results.push(element);
+                }
+            });
 
-        let final: any[] = [];
-        let required = this.OPTIONS.quiredFields;
-        //  filter displayed filed
-        //   https://stackoverflow.com/questions/38750705/filter-object-properties-by-key-in-es6
-        results.forEach((result) => {
-            let filtered = Object.keys(result)
-            .filter((key) => required.includes(key))
-            .reduce((obj: any, key) => {
-                    obj[key] = result[key];
-                    return obj;
-                }, {});
+            let final: any[] = [];
+            let required = this.OPTIONS.quiredFields;
+            //  filter displayed filed
+            //   https://stackoverflow.com/questions/38750705/filter-object-properties-by-key-in-es6
+            results.forEach((result) => {
+                let filtered = Object.keys(result)
+                    .filter((key) => required.includes(key))
+                    .reduce((obj: any, key) => {
+                        obj[key] = result[key];
+                        return obj;
+                    }, {});
 
-            this.postProcess(filtered);
-            final.push(filtered);
-        });
-        final = this.OPTIONS.sort(final);
+                this.postProcess(filtered);
+                final.push(filtered);
+            });
 
-        if (final.length > 5000) {
+            final = this.OPTIONS.sort(final);
+
+            if (final.length > 5000) {
                 throw new ResultTooLargeError("> 5000");
             }
 
-        return final;
-            }
+            return final;
         }
     }
 
