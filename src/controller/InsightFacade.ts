@@ -11,7 +11,6 @@ import * as fs from "fs-extra";
  */
 
 export default class InsightFacade implements IInsightFacade {
-
     public datasetController: DatasetController;
 
     constructor() {
@@ -56,18 +55,15 @@ export default class InsightFacade implements IInsightFacade {
         return Promise.resolve(Array.from(this.datasetController.datasets.values()));
     }
 
-    public listDatasets(): Promise<InsightDataset[]> {
-        return Promise.reject("Not implemented");
-    }
-
     public performQuery(query: any): Promise <any[]> {
         try {
 
             const queryResult = new Query(query);
             queryResult.validate();
             // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
-            let queriedID: string = "";
+            let queriedID: string;
 
+            // check if all elements in array is the same
             if (queryResult.IDstrings.every((val, _, arr) => val === arr[0])) {
                 queriedID = queryResult.IDstrings[0];
             } else {

@@ -1,8 +1,6 @@
 import { MKey } from "./MKey";
-import Query from "./Query";
 import { InsightError } from "../IInsightFacade";
 import { SKey } from "./SKey";
-import { isNullOrUndefined } from "util";
 
 // deal with * inputString; todo
 
@@ -14,8 +12,8 @@ export class Filter {
     public LT: MKey;
     public IS: SKey;
     public NOT: Filter;
-    public LogicComparators: string[] = ["AND", "OR"];
-    public MComparators: string[] = ["GT", "EQ", "LT"];
+    private LogicComparators: string[] = ["AND", "OR"];
+    private MComparators: string[] = ["GT", "EQ", "LT"];
     public comparator: string;
     public comparedField: any;
     public whereBlock: any;
@@ -44,20 +42,19 @@ export class Filter {
     }
 
     // for loop + recursive
-    public validateLogicalComparators() {
+    private validateLogicalComparators() {
         if (this.comparator === "AND") {
             let array: any[] = this.whereBlock.AND;
             let newArray: Filter[] = [];
+            //  instantiate and then push each json object into recursive check
             array.forEach((element) => {
-
                 newArray.push(new Filter({ WHERE: element }));
-
             });
 
             this.AND = newArray;
             if (this.AND.length === 0) { throw new InsightError("empty AND"); }
 
-            // dealing with Dataset ID
+            // dealing with Dataset ID, pushing the  to an array
             let IDs: string[] = [];
             this.AND.forEach(function (element: Filter) {
                 element.validateFilter();
@@ -74,9 +71,7 @@ export class Filter {
             let array: any[] = this.whereBlock.OR;
             let newArray: Filter[] = [];
             array.forEach((element) => {
-
                 newArray.push(new Filter({ WHERE: element }));
-
             });
 
             this.OR = newArray;
@@ -96,7 +91,6 @@ export class Filter {
         }
     }
 
-    // todo : abstract
     public validateMComparators() {
         if (this.comparator === "GT") {
             this.GT = this.whereBlock.GT;
@@ -137,7 +131,6 @@ export class Filter {
         if (Object.keys(this.whereBlock.NOT).length !== 1) { throw new InsightError("not 1 field"); }
         let query: any = { WHERE: this.whereBlock.NOT };
         let newFilter: Filter = new Filter(query);
-
         this.NOT = newFilter;
         this.NOT.validateFilter();
 
@@ -165,9 +158,7 @@ export class Filter {
             let array: any[] = this.whereBlock.AND;
             let newArray: Filter[] = [];
             array.forEach((element) => {
-
                 newArray.push(new Filter({ WHERE: element }));
-
             });
             this.AND = newArray;
             const ANDarrary: boolean[] = this.AND.map((element) => element.parseFilter(datapoint));
@@ -179,9 +170,7 @@ export class Filter {
             let array: any[] = this.whereBlock.OR;
             let newArray: Filter[] = [];
             array.forEach((element) => {
-
                 newArray.push(new Filter({ WHERE: element }));
-
             });
             this.OR = newArray;
             const ORarrary: boolean[] = this.OR.map((element) => element.parseFilter(datapoint));
@@ -210,14 +199,11 @@ export class Filter {
     public parseSComparators(datapoint: any): boolean {
         let skey =  new SKey(this.comparedField);
         return skey.checkSfield(datapoint);
-
     }
 
     public parseNegationComparators(datapoint: any): boolean {
         let query: any = { WHERE: this.whereBlock.NOT };
-
         let newFilter: Filter = new Filter(query);
-
         this.NOT = newFilter;
         return !this.NOT.parseFilter(datapoint);
     }

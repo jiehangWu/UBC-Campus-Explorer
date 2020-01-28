@@ -5,8 +5,8 @@ export class MKey {
     public idString: string;
     public field: string;
     public value: any;
-    public dataset: string[] = ["courses"];
-    public mfields: string[] = ["avg" , "pass" , "fail" , "audit" , "year"];
+    private dataset: string[] = ["courses"];
+    private mfields: string[] = ["avg" , "pass" , "fail" , "audit" , "year"];
 
     public constructor(pair: any) {
         this.key = Object.keys(pair)[0];

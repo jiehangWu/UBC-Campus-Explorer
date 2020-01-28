@@ -5,8 +5,8 @@ export class SKey {
     public idString: string;
     public field: string;
     public value: string;
-    public dataset: string[] = ["courses"];
-    public sfields: string[] =  ["dept" , "id" , "instructor" , "title" , "uuid"];
+    private dataset: string[] = ["courses"];
+    private sfields: string[] =  ["dept" , "id" , "instructor" , "title" , "uuid"];
 
     public constructor(pair: any) {
         this.key = Object.keys(pair)[0];
@@ -20,18 +20,18 @@ export class SKey {
         if (this.value.includes("*")) { this.validateAsterisk(); }
     }
 
-    public splitPair(pair: string) {
+    private splitPair(pair: string) {
         const str = pair.split("_", 2);
         this.idString = str[0];
         this.field = str[1];
     }
 
-    public validateIDString() {
+    private validateIDString() {
         if (! this.dataset.includes(this.idString)) {
             throw new InsightError("Referenced dataset coures not added yet");
         }
     }
-    public validateSField() {
+    private validateSField() {
         if (! this.sfields.includes(this.field)) {
             throw new InsightError("Invalid key courses_xxx in COLUMNS"); }
         if (typeof this.value !== "string") {
@@ -42,7 +42,7 @@ export class SKey {
             return this.idString;
         }
 
-    public validateAsterisk() {
+    private validateAsterisk() {
         let flag: boolean = false;
         if (this.value.includes("*")) {
             let count: number = this.value.replace(/[^*]/g , "").length;
@@ -66,10 +66,10 @@ export class SKey {
             return dataValue.includes(this.value.substr(1, (this.value.length - 2)));
         } else if (count === 1) {
             if (this.value.startsWith("*")) {
-                return dataValue.endsWith(this.value.substr(1, this.value.length - 1));
+                return dataValue.endsWith(this.value.substr(1, this.value.length));
 
             } else if (this.value.endsWith("*")) {
-                return dataValue.startsWith(this.value.substr(0, (this.value.length - 2)));
+                return dataValue.startsWith(this.value.substr(0, (this.value.length - 1)));
             }
         }
     } else {

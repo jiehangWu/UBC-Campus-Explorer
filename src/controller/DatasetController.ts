@@ -36,7 +36,6 @@ export class DatasetController {
                 if (!this.validateSection(section)) {
                     continue;
                 }
-
                 let year: number;
                 if (section["Section"] === "overall") {
                     year = 1900;

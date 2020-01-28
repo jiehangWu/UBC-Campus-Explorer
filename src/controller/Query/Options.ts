@@ -1,7 +1,7 @@
 import { InsightError } from "../IInsightFacade";
+import { isNullOrUndefined } from "util";
 
-
-export class Options {
+export class OPTIONS {
     public Columns: any[];
     public ORDER: string;
     public optionBlock: any;
@@ -15,14 +15,31 @@ export class Options {
         this.optionBlock = query.OPTIONS;
         this.IDstrings = [];
 
+        //  2 if blocks below to check if wrong key in options
+        if ( Object.keys(this.optionBlock).length === 1 && (! Object.keys(this.optionBlock).includes("COLUMNS") ) ) {
+            throw new InsightError("missing columns");
+        }
+
+        if ( Object.keys(this.optionBlock).length === 2 &&
+        (! ((Object.keys(this.optionBlock).includes("COLUMNS")) &&
+        (Object.keys(this.optionBlock).includes("ORDER")) )) ) {
+            throw new InsightError("wrong keys in options");
+        }
+
         if (! Object.keys(this.optionBlock).includes("COLUMNS")) {
             throw new InsightError("missing columns");
         }
 
         this.Columns = this.optionBlock.COLUMNS;
 
+
+        //  have to check if data set and
         if (Object.keys(this.optionBlock).includes("ORDER")) {
+            if (typeof this.optionBlock.ORDER !== "string") {
+                throw new InsightError("wrong type in order");
+            }
             this.ORDER = this.optionBlock.ORDER as string;
+
             this.validateOrder();
         }
     }
@@ -47,14 +64,26 @@ export class Options {
         let comparedPair: string[] = [];
         let displayField: string[] = [];
 
+        if (this.Columns === undefined || this.Columns.length === 0) {
+            throw new InsightError("Columns must be arrary");
+        }
+
+        if (" " in this.Columns) { throw new InsightError("Cannot read property 'GROUP' of undefined"); }
+
         let IDs: string[] = [];
         this.Columns.forEach((element) => {
+            if (typeof element !== "string") {
+                throw new InsightError("");
+            }
             comparedPair = element.split("_", 2);
             IDs = IDs.concat([comparedPair[0]]);
-
             if (! this.allFields.includes(comparedPair[1])) {
                     throw new InsightError("Invalid field courses_xxx");
                 }
+
+            if (typeof element !== "string") {
+                throw new InsightError(typeof element);
+            }
 
             displayField.push(comparedPair[1]);
         });
