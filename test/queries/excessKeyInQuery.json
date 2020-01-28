@@ -1,0 +1,19 @@
+{
+    "title": "LT must be object",
+    "query": {
+        "EXCESS KEY": {},
+        "WHERE": {
+            "IS": {
+                "courses_dept": "astr"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg"
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}
