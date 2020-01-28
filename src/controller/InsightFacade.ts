@@ -63,7 +63,7 @@ export default class InsightFacade implements IInsightFacade {
             // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
             let queriedID: string;
 
-            // check if all elements in array is the same
+            // check if all elements in array is the same.
             if (queryResult.IDstrings.every((val, _, arr) => val === arr[0])) {
                 queriedID = queryResult.IDstrings[0];
             } else {
