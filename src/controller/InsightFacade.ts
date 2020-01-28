@@ -74,7 +74,7 @@ export default class InsightFacade implements IInsightFacade {
                 throw new InsightError("Referenced data not added");
             }
 
-            // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile
+            // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile.
             let path = "./data/courses/" + queriedID + ".json";
             let rawData: any = fs.readFileSync(path);
             let dataSet = JSON.parse(rawData);
