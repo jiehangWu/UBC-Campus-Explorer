@@ -37,7 +37,7 @@ export default class InsightFacade implements IInsightFacade {
                         return Promise.resolve(Array.from(this.datasetController.datasets.keys()));
                     })
                     .catch((err: any) => {
-                        return Promise.reject(err);
+                        return Promise.reject(new InsightError("Can not add course dataset"));
                     });
             } else {
                 return Promise.reject(new InsightError("Invalid InsightDatasetKind"));
@@ -55,7 +55,7 @@ export default class InsightFacade implements IInsightFacade {
 
         let path = "./data/" + "courses" + "/" + id + ".json";
 
-        if (fs.existsSync(path)) {
+        if (fs.existsSync(path) && this.datasetController.datasets.has(id)) {
             fs.unlinkSync(path);
 
             this.datasetController.datasets.delete(id);

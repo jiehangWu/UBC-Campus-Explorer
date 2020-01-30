@@ -103,9 +103,9 @@ export class DatasetController {
 
             new JSZip().loadAsync(content, { base64: true })
                 .then((zip: JSZip) => {
-                    if (zip.folder(id).length === 0) { reject(new InsightError("Does not contain valid file")); }
+                    if (zip.folder(kind).length === 0) { reject(new InsightError("Does not contain valid file")); }
 
-                    zip.folder(id).forEach((_, file: JSZipObject) => {
+                    zip.folder(kind).forEach((_, file: JSZipObject) => {
                         let fileContents: Promise<string> = file.async("text")
                             .then((body: string) => {
                                 return this.parseJson(body);
