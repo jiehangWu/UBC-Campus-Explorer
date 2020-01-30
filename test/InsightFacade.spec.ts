@@ -29,7 +29,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         empty: "./test/data/coursesEmpty.zip",
         invalidZip: "./test/data/coursesWithInvalidJson.zip",
         invalidTxt: "./test/data/courses.txt",
-        validAndInvalidJson: "./test/data/coursesWithBothValidAndInvalid.zip",
+        validAndInvalid: "./test/data/validAndInvalid.zip",
         coursesInvalidFile: "./test/data/coursesContainsOnlyInvalidFile.zip",
         invalidName: "./test/data/invalidName.zip",
     };
@@ -216,13 +216,13 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     it("Should be able to add dataset given a file that contains both valid and invalid file", function () {
-        const id: string = "courses";
+        const id: string = "validAndInvalid";
         const expected: string[] = [id];
 
         return insightFacade
             .addDataset(
                 id,
-                datasets["validAndInvalidJson"],
+                datasets[id],
                 InsightDatasetKind.Courses,
             )
             .then((result: string[]) => {
@@ -441,96 +441,6 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 expect.fail(err, [id], "Should not be rejected");
             });
     });
-
-
-        // Remove 7
-     // Valid case removing courses
-    it("Should remove a valid dataset", function () {
-        const id: string = "courses";
-        const expected = id;
-        return insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses)
-        .then(() => {
-            return insightFacade.removeDataset(id).then((res: string) => {
-                expect(res).to.deep.equal(expected);
-            }).catch((error: any) => {
-                expect.fail("Should not have rejected");
-            });
-        }).catch((err: any) => {
-            expect.fail("Should not have rejected");
-        });
-    });
-
-    // Fail with dataset hasn't been added
-    it("Should not remove a dataset that hasn't been added", function () {
-        const id0: string = "courses";
-        return insightFacade.removeDataset(id0).then((result: string) => {
-            expect.fail("Should have rejected");
-        }).catch((err: any) => {
-            expect(err).to.be.instanceOf(NotFoundError);
-        });
-    });
-
-    // Fail with wrong-ided dataset to be removed
-    it("Should remove a wrong-named dataset", function () {
-        const id0: string = "courses";
-        const id1: string = "coursses";
-        return insightFacade.addDataset(id0, datasets[id0], InsightDatasetKind.Courses)
-        .then(() => {
-            return insightFacade.removeDataset(id1);
-        })
-        .then((result: string) => {
-            expect.fail("Should have rejected");
-        }).catch((err: any) => {
-            expect(err).to.be.instanceOf(InsightError);
-        });
-
-    });
-
-    // Fail with removing the white-spaced file
-    it("Should not remove a white-spaced file", function () {
-        const id: string = " ";
-        return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses)
-        .then(() => {
-            return insightFacade.removeDataset(id);
-        })
-        .then((result: string) => {
-            expect.fail("Should have rejected");
-        }).catch((err: any) => {
-            expect(err).to.be.instanceOf(InsightError);
-        });
-    });
-
-    // Fail with removing null-IDed file
-    it("Should remove a null-IDed dataset", function () {
-            insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses);
-            return insightFacade.removeDataset(null).then((result: string) => {
-                expect.fail("Should have rejected");
-            }).catch((err: any) => {
-                expect(err).to.be.instanceOf(InsightError);
-            });
-        });
-
-        // Fail with removing undefined file
-    it("Should remove a undefined dataset", function () {
-            insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses);
-            return insightFacade.removeDataset(undefined).then((result: string) => {
-                expect.fail("Should have rejected");
-            }).catch((err: any) => {
-                expect(err).to.be.instanceOf(InsightError);
-            });
-        });
-
-        // Fail with removing the empty file-name
-    it("Should not remove a empty-IDed file", function () {
-        const id: string = "";
-        insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses);
-        return insightFacade.removeDataset(id).then((result: string) => {
-            expect.fail("Should have rejected");
-        }).catch((err: any) => {
-            expect(err).to.be.instanceOf(InsightError);
-        });
-    });
-
 });
 
 /*

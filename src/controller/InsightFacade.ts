@@ -1,5 +1,5 @@
 import Log from "../Util";
-import { IInsightFacade, InsightDataset, InsightDatasetKind, ResultTooLargeError } from "./IInsightFacade";
+import {IInsightFacade, InsightDataset, InsightDatasetKind, NotFoundError, ResultTooLargeError} from "./IInsightFacade";
 import { InsightError } from "./IInsightFacade";
 import { DatasetController } from "./DatasetController";
 import Query from "./Query/Query";
@@ -27,10 +27,10 @@ export default class InsightFacade implements IInsightFacade {
 
             if (kind === InsightDatasetKind.Courses) {
                 return this.datasetController.addCourseDataset(id, content, kind)
-                    .then((result: any) => {
-                        this.datasetController.datasets.set(result[0],
+                    .then((result: [string, number]) => {
+                        this.datasetController.datasets.set(id,
                             {
-                                id: id,
+                                id: result[0],
                                 kind: kind,
                                 numRows: result[1]
                             });
@@ -49,7 +49,21 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        return this.datasetController.removeDataset(id);
+        if (!this.datasetController.validateId(id)) {
+            return Promise.reject(new InsightError("This id is invalid"));
+        }
+
+        let path = "./data/" + "courses" + "/" + id + ".json";
+
+        if (fs.existsSync(path)) {
+            fs.unlinkSync(path);
+
+            this.datasetController.datasets.delete(id);
+
+            return Promise.resolve(id);
+        } else {
+            return Promise.reject(new NotFoundError("ID is not in the dataset"));
+        }
     }
 
     public listDatasets(): Promise<InsightDataset[]> {

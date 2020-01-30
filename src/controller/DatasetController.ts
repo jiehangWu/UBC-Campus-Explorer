@@ -2,6 +2,7 @@ import { InsightDatasetKind, InsightError, InsightDataset, NotFoundError } from 
 import { JSZipObject } from "jszip";
 import * as JSZip from "jszip";
 import * as fs from "fs-extra";
+import Log from "../Util";
 
 interface ICourse {
     dept: string;
@@ -98,27 +99,28 @@ export class DatasetController {
 
     public addCourseDataset(id: string, content: string, kind: InsightDatasetKind): Promise<[string, number]> {
         return new Promise((resolve, reject) => {
-            let jszip = new JSZip();
+            let promises: Array<Promise<string>> = [];
 
-            jszip.loadAsync(content, { base64: true })
-                .then((zip) => {
-                    // Load file to an array of promises
-                    let promises: Array<Promise<string>> = [];
+            new JSZip().loadAsync(content, { base64: true })
+                .then((zip: JSZip) => {
+                    if (zip.folder(id).length === 0) { reject(new InsightError("Does not contain valid file")); }
 
                     zip.folder(id).forEach((_, file: JSZipObject) => {
-                        let fileContent = file.async("text")
+                        let fileContents: Promise<string> = file.async("text")
                             .then((body: string) => {
-                                return JSON.parse(body);
+                                return this.parseJson(body);
                             })
                             .catch((err: any) => {
+                                Log.error(err);
                                 return null;
                             });
-                        promises.push(fileContent);
+
+                        promises.push(fileContents);
                     });
 
                     Promise.all(promises)
-                        .then((fileContents: any[]) => {
-                            this.parseFileContents(fileContents)
+                        .then((contents: any[]) => {
+                            this.parseFileContents(contents)
                                 .then((courses: ICourse[]) => {
                                     if (courses.length >= 1) {
                                         this.saveToDisk(id, courses);
@@ -126,41 +128,26 @@ export class DatasetController {
                                     } else {
                                         reject(new InsightError("This dataset does not contain a valid section"));
                                     }
-                                })
-                                .catch((err: any) => {
-                                    reject(new InsightError("This dataset does not contain a valid file"));
                                 });
                         })
                         .catch((err: any) => {
-                            reject(err);
+                            reject(new InsightError("Can not Promise.all"));
                         });
                 })
                 .catch((err: any) => {
-                    reject(new InsightError("This file is not valid zip file"));
+                    reject(new InsightError("can not loadAsync"));
                 });
         });
     }
 
-    public removeDataset(id: string): Promise<string> {
-        if (!this.validateId(id)) {
-            return Promise.reject(new InsightError("This id is invalid"));
+    private parseJson(body: string): string {
+        let parsed;
+        try {
+            parsed = JSON.parse(body);
+        } catch (err) {
+            parsed = null;
         }
-
-        let path = "./data/" + "courses";
-
-        if (this.datasets.has(id)) {
-            try {
-                fs.unlinkSync(path + "/" + id + ".json");
-            } catch (err) {
-                return Promise.reject(new InsightError("Could not unlink file"));
-            }
-
-            this.datasets.delete(id);
-
-            return Promise.resolve(id);
-        } else {
-            return Promise.reject(new NotFoundError("ID is not in the dataset"));
-        }
+        return parsed;
     }
 }
 
