@@ -46,7 +46,7 @@ export class Filter {
         if (this.comparator === "AND") {
             let array: any[] = this.whereBlock.AND;
             let newArray: Filter[] = [];
-            //  instantiate and then push each json object into recursive check
+            //  instantiate and then push each json object into recursive check.
             array.forEach((element) => {
                 newArray.push(new Filter({ WHERE: element }));
             });
