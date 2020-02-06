@@ -65,6 +65,9 @@ export default class Query {
             if (this.datasets.length > 5000) {
                 throw new ResultTooLargeError(">5000");
             } else {
+                dataset.forEach((datapoint: any) => {
+                    this.postProcess(datapoint);
+                });
                 return dataset;
             }
         } else {

@@ -72,6 +72,9 @@ export default class InsightFacade implements IInsightFacade {
 
     public performQuery(query: any): Promise<any[]> {
         try {
+            if (!query) {
+                throw new InsightError("Query empty or ");
+            }
             const queryResult = new Query(query);
             queryResult.validate();
             // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
