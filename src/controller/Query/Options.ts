@@ -16,6 +16,12 @@ export class OPTIONS {
         this.IDstrings = [];
 
         //  2 if blocks below to check if wrong key in options
+        Object.keys(this.optionBlock).forEach((key) => {
+            if (! (key === "COLUMNS" || key === "ORDER")) {
+                throw new InsightError("Wrong key in options");
+            }
+        });
+
         if ( Object.keys(this.optionBlock).length === 1 && (! Object.keys(this.optionBlock).includes("COLUMNS") ) ) {
             throw new InsightError("missing columns");
         }
@@ -63,6 +69,10 @@ export class OPTIONS {
     public validateColumns() {
         let comparedPair: string[] = [];
         let displayField: string[] = [];
+
+        if (!Array.isArray(this.Columns)) {
+            throw new InsightError("Columns not an array");
+        }
 
         if (this.Columns === undefined || this.Columns.length === 0) {
             throw new InsightError("Columns must be arrary");

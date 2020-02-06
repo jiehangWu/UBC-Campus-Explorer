@@ -44,52 +44,77 @@ export class Filter {
     // for loop + recursive
     private validateLogicalComparators() {
         if (this.comparator === "AND") {
-            let array: any[] = this.whereBlock.AND;
-            let newArray: Filter[] = [];
-            //  instantiate and then push each json object into recursive check.
-            array.forEach((element) => {
-                newArray.push(new Filter({ WHERE: element }));
-            });
-
-            this.AND = newArray;
-            if (this.AND.length === 0) { throw new InsightError("empty AND"); }
-
-            // dealing with Dataset ID, pushing the  to an array
-            let IDs: string[] = [];
-            this.AND.forEach(function (element: Filter) {
-                element.validateFilter();
-                IDs = IDs.concat(element.IDstrings);
-                if (!["AND", "NOT", "OR"].includes(element.comparator)) {
-                    IDs = IDs.concat(element.IDstrings);
-                }
-            });
-
-            this.IDstrings = this.IDstrings.concat(IDs);
-        }
-
-        if (this.comparator === "OR") {
-            let array: any[] = this.whereBlock.OR;
-            let newArray: Filter[] = [];
-            array.forEach((element) => {
-                newArray.push(new Filter({ WHERE: element }));
-            });
-
-            this.OR = newArray;
-            if (this.OR.length === 0) { throw new InsightError("empty OR"); }
-
-            let IDs: string[] = [];
-            this.OR.forEach(function (element: Filter) {
-                element.validateFilter();
-                IDs = IDs.concat(element.IDstrings);
-
-                if (!["AND", "NOT", "OR"].includes(element.comparator)) {
-                    IDs = IDs.concat(element.IDstrings);
-                }
-            });
-
-            this.IDstrings = this.IDstrings.concat(IDs);
+            this.validateAnd();
+        } else  if (this.comparator === "OR") {
+            this.validateOr();
         }
     }
+
+    private validateAnd() {
+        let array: any[] = this.whereBlock.AND;
+        let newArray: Filter[] = [];
+        if (! Array.isArray(array)) {
+                throw new InsightError("And is not an array");
+            }
+            //  instantiate and then push each json object into recursive check.
+        array.forEach((element) => {
+                if (Object.keys(element).length === 0 && element.constructor === Object) {
+                    throw new InsightError("empty in logical array");
+                }
+                if (!(typeof element === "object" && element !== null)) {
+                    throw new InsightError("Logic arrary not an object");
+                }
+                newArray.push(new Filter({ WHERE: element }));
+            });
+
+        this.AND = newArray;
+        if (this.AND.length === 0) { throw new InsightError("empty AND"); }
+
+        // dealing with Dataset ID, pushing the  to an array
+        let IDs: string[] = [];
+        this.AND.forEach(function (element: Filter) {
+                element.validateFilter();
+                IDs = IDs.concat(element.IDstrings);
+                if (!["AND", "NOT", "OR"].includes(element.comparator)) {
+                    IDs = IDs.concat(element.IDstrings);
+                }
+            });
+
+        this.IDstrings = this.IDstrings.concat(IDs);
+    }
+
+    private validateOr() {
+        let array: any[] = this.whereBlock.OR;
+        let newArray: Filter[] = [];
+        if (! Array.isArray(array)) {
+            throw new InsightError("Or is not an array");
+        }
+        array.forEach((element) => {
+            if (Object.keys(element).length === 0 && element.constructor === Object) {
+                throw new InsightError("empty object in Logical Array");
+            }
+            if (!(typeof element === "object" && element !== null)) {
+                throw new InsightError("Logic arrary not an object");
+            }
+            newArray.push(new Filter({ WHERE: element }));
+        });
+
+        this.OR = newArray;
+        if (this.OR.length === 0) { throw new InsightError("empty OR"); }
+
+        let IDs: string[] = [];
+        this.OR.forEach(function (element: Filter) {
+            element.validateFilter();
+            IDs = IDs.concat(element.IDstrings);
+
+            if (!["AND", "NOT", "OR"].includes(element.comparator)) {
+                IDs = IDs.concat(element.IDstrings);
+            }
+        });
+
+        this.IDstrings = this.IDstrings.concat(IDs);
+    }
+
 
     public validateMComparators() {
         if (this.comparator === "GT") {
