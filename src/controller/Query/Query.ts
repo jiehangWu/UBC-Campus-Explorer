@@ -65,11 +65,22 @@ export default class Query {
             if (this.datasets.length > 5000) {
                 throw new ResultTooLargeError(">5000");
             } else {
-                dataset.forEach((datapoint: any) => {
-                    this.postProcess(datapoint);
-                });
-                this.OPTIONS.sort(dataset);
-                return dataset;
+                let final: any[] = [];
+                let required = this.OPTIONS.quiredFields;
+                //  filter displayed filed
+                dataset.forEach((result: any) => {
+                let filtered = Object.keys(result)
+                    .filter((key) => required.includes(key))
+                    .reduce((obj: any, key) => {
+                        obj[key] = result[key];
+                        return obj;
+                    }, {});
+
+                this.postProcess(filtered);
+                final.push(filtered);
+            });
+                this.OPTIONS.sort(final);
+                return final;
             }
         } else {
             this.datasets.forEach((element) => {
