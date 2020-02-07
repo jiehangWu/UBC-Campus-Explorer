@@ -68,6 +68,7 @@ export default class Query {
                 dataset.forEach((datapoint: any) => {
                     this.postProcess(datapoint);
                 });
+                this.OPTIONS.sort(dataset);
                 return dataset;
             }
         } else {
