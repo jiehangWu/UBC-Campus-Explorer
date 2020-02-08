@@ -1,12 +1,11 @@
 import { InsightError } from "../IInsightFacade";
-import { isNullOrUndefined } from "util";
 
 export class OPTIONS {
     public Columns: any[];
     public ORDER: string;
     public optionBlock: any;
     public IDstrings: string[];
-    public allFields: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
+    private allFields: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
     "dept" , "id" , "instructor" , "title" , "uuid"];
     public quiredFields: string[];
     public orderField: string;
@@ -61,7 +60,6 @@ export class OPTIONS {
         }
 
         let OrderId = this.ORDER.split("_", 2)[0];
-
 
         this.IDstrings.push(OrderId);
     }

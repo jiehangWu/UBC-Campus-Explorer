@@ -45,7 +45,7 @@ export class Filter {
     private validateLogicalComparators() {
         if (this.comparator === "AND") {
             this.validateAnd();
-        } else  if (this.comparator === "OR") {
+        } else {
             this.validateOr();
         }
     }
@@ -148,7 +148,7 @@ export class Filter {
         let pair: SKey = new SKey(this.comparedField);
         this.IS = pair;
         this.IS.validate();
-        this.IDstrings = [...this.IDstrings, pair.getIDstring()];
+        this.IDstrings.push(pair.getIDstring());
     }
 
     public validateNegationComparators() {
@@ -190,6 +190,7 @@ export class Filter {
             ANDarrary.forEach((parsedFilter) => flag = flag && parsedFilter);
             return flag;
         }
+
         if (this.comparator === "OR") {
             let flag: boolean = false;
             let array: any[] = this.whereBlock.OR;
@@ -216,7 +217,6 @@ export class Filter {
             return mvalue === datapoint[searchField];
         }
         if (this.comparator === "LT") {
-            // throw new Error(mvalue + " | " + datapoint[searchField]);
             return datapoint[searchField] < mvalue;
         }
     }
