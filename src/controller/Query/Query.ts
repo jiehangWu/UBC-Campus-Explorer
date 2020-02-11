@@ -1,15 +1,17 @@
 import { Filter } from "./Filter";
-import { OPTIONS } from "./Options";
+import { Options } from "./Options";
 import { InsightError, ResultTooLargeError } from "../IInsightFacade";
 
 
 export default class Query {
     public WHERE: Filter;
-    public OPTIONS: OPTIONS;
+    public OPTIONS: Options;
     private keyset: string[];
     private datasets: any[];
     public IDstrings: string[];
+
     private emptyWhere?: boolean;
+    private Transformation?: boolean;
 
     public constructor(query: any) {
         this.keyset = Object.keys(query);
@@ -19,7 +21,7 @@ export default class Query {
 
     private checkQueryStructure(query: any) {
         if (!query)                                  { throw new InsightError("Query empty or null"); }
-        if (this.keyset.length !== 2)                { throw new InsightError("excess key"); }
+        if (this.keyset.length > 3)                { throw new InsightError("excess key"); }
         if (!this.keyset.includes("WHERE"))          { throw new InsightError("missing WHERE"); }
         if (typeof query.WHERE !== "object")         { throw new InsightError("WHERE not an obj"); }
         if (Object.keys(query.WHERE).length > 1)     { throw new InsightError("WHERE should at most have 1 key"); }
@@ -32,7 +34,9 @@ export default class Query {
         }
 
         if (!this.keyset.includes("OPTIONS"))        { throw new InsightError("missing OPTIONS"); }
-        this.OPTIONS = new OPTIONS(query);
+        this.OPTIONS = new Options(query);
+
+        if (this.keyset.includes("TRANSFORMATION")) { throw new InsightError("missing WHERE"); }
     }
 
     public validate() {

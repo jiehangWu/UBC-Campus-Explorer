@@ -1,8 +1,9 @@
 import { InsightError } from "../IInsightFacade";
+import { Sort } from "./Sort";
 
-export class OPTIONS {
+export class Options {
     public Columns: any[];
-    public ORDER: string;
+    public ORDER: string | Sort;
     public optionBlock: any;
     public IDstrings: string[];
     private allFields: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
@@ -21,7 +22,8 @@ export class OPTIONS {
             }
         });
 
-        if ( Object.keys(this.optionBlock).length === 1 && (! Object.keys(this.optionBlock).includes("COLUMNS") ) ) {
+        if ( Object.keys(this.optionBlock).length === 1 &&
+        (! Object.keys(this.optionBlock).includes("COLUMNS") ) ) {
             throw new InsightError("missing columns");
         }
 
@@ -31,14 +33,12 @@ export class OPTIONS {
             throw new InsightError("wrong keys in options");
         }
 
-        if (! Object.keys(this.optionBlock).includes("COLUMNS")) {
-            throw new InsightError("missing columns");
-        }
+        // if (! Object.keys(this.optionBlock).includes("COLUMNS")) {
+        //     throw new InsightError("missing columns");
+        // }
 
         this.Columns = this.optionBlock.COLUMNS;
 
-
-        //  have to check if data set and
         if (Object.keys(this.optionBlock).includes("ORDER")) {
             if (typeof this.optionBlock.ORDER !== "string") {
                 throw new InsightError("wrong type in order");
@@ -54,14 +54,21 @@ export class OPTIONS {
             throw new InsightError("undefined order type");
         }
 
-        this.orderField = this.ORDER.split("_", 2)[1];
-        if (! this.allFields.includes(this.orderField)) {
-            throw new InsightError("invalid order type");
+        //  two cases: order = string | obj wiz dir and keys as an arrary
+        if (typeof this.ORDER === "string") {
+            this.orderField = this.ORDER.split("_", 2)[1];
+            if (! this.allFields.includes(this.orderField)) {
+                throw new InsightError("invalid order type");
+            }
+
+            let OrderId = this.ORDER.split("_", 2)[0];
+
+            this.IDstrings.push(OrderId);
+            // realte to the situation that difference in checking idstrings
+        } else if (typeof this.ORDER === "object") {
+            let sort: Sort = this.ORDER;
+            sort.validate();
         }
-
-        let OrderId = this.ORDER.split("_", 2)[0];
-
-        this.IDstrings.push(OrderId);
     }
 
     public validateColumns() {
@@ -110,6 +117,7 @@ export class OPTIONS {
     public sort(res: any[]): void {
         const sortedField = this.processField(this.orderField);
 
+        // for loop to break tie
         function compare(a: any, b: any) {
             const valA = a[sortedField];
             const valB = b[sortedField];
