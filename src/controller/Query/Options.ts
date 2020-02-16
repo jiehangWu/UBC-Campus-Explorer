@@ -8,6 +8,7 @@ export class OPTIONS {
     public IDstrings: string[];
     public allFields: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
     "dept" , "id" , "instructor" , "title" , "uuid"];
+
     public quiredFields: string[];
     public orderField: string;
 
@@ -78,7 +79,9 @@ export class OPTIONS {
             throw new InsightError("Columns must be arrary");
         }
 
-        if (" " in this.Columns) { throw new InsightError("Cannot read property 'GROUP' of undefined"); }
+        if (" " in this.Columns) {
+ throw new InsightError("Cannot read property 'GROUP' of undefined");
+}
 
         let IDs: string[] = [];
         this.Columns.forEach((element) => {

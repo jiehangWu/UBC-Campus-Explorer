@@ -3,5 +3,5 @@ export default interface IRoomDetail {
     seats: number;
     type: string;
     furniture: string;
-    href: string
+    href: string;
 }

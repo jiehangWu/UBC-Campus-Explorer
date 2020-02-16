@@ -19,8 +19,12 @@ export default class Query {
 
     //  check overall structure: 1. Where: missing/ empty
     private checkStructure(query: any) {
-        if (!this.keyset.includes("WHERE")) { throw new InsightError("missing WHERE"); }
-        if (!this.keyset.includes("OPTIONS")) { throw new InsightError("missing OPTIONS"); }
+        if (!this.keyset.includes("WHERE")) {
+ throw new InsightError("missing WHERE");
+}
+        if (!this.keyset.includes("OPTIONS")) {
+ throw new InsightError("missing OPTIONS");
+}
 
         if (Object.keys(query.WHERE).length === 0) {
             this.emptyWhere = true;
@@ -28,9 +32,15 @@ export default class Query {
             this.emptyWhere = false;
         }
 
-        if (Object.keys(query.WHERE).length > 1) { throw new InsightError("WHERE should only have 1 key"); }
-        if (typeof query.WHERE !== "object") { throw new InsightError("WHERE not an obj"); }
-        if (this.keyset.length !== 2) { throw new InsightError("excess key"); }
+        if (Object.keys(query.WHERE).length > 1) {
+ throw new InsightError("WHERE should only have 1 key");
+}
+        if (typeof query.WHERE !== "object") {
+ throw new InsightError("WHERE not an obj");
+}
+        if (this.keyset.length !== 2) {
+ throw new InsightError("excess key");
+}
 
         if (this.emptyWhere === false) {
             this.WHERE = new Filter(query);

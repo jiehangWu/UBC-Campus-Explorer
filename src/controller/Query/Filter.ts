@@ -38,7 +38,9 @@ export class Filter {
             this.validateSComparators();
         } else if (this.comparator === "NOT") {
             this.validateNegationComparators();
-        } else { throw new InsightError("Wrong filter key"); }
+        } else {
+ throw new InsightError("Wrong filter key");
+}
     }
 
     // for loop + recursive
@@ -68,7 +70,9 @@ export class Filter {
             });
 
         this.AND = newArray;
-        if (this.AND.length === 0) { throw new InsightError("empty AND"); }
+        if (this.AND.length === 0) {
+ throw new InsightError("empty AND");
+}
 
         // dealing with Dataset ID, pushing the  to an array
         let IDs: string[] = [];
@@ -100,7 +104,9 @@ export class Filter {
         });
 
         this.OR = newArray;
-        if (this.OR.length === 0) { throw new InsightError("empty OR"); }
+        if (this.OR.length === 0) {
+ throw new InsightError("empty OR");
+}
 
         let IDs: string[] = [];
         this.OR.forEach(function (element: Filter) {
@@ -119,7 +125,9 @@ export class Filter {
     public validateMComparators() {
         if (this.comparator === "GT") {
             this.GT = this.whereBlock.GT;
-            if (Object.keys(this.GT).length !== 1) { throw new InsightError("GT not 1 field"); }
+            if (Object.keys(this.GT).length !== 1) {
+ throw new InsightError("GT not 1 field");
+}
 
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
@@ -128,7 +136,9 @@ export class Filter {
 
         if (this.comparator === "EQ") {
             this.EQ = this.whereBlock.EQ;
-            if (Object.keys(this.EQ).length !== 1) { throw new InsightError("EQ not 1 field"); }
+            if (Object.keys(this.EQ).length !== 1) {
+ throw new InsightError("EQ not 1 field");
+}
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
             this.IDstrings.push(pair.getIDstring());
@@ -136,7 +146,9 @@ export class Filter {
 
         if (this.comparator === "LT") {
             this.LT = this.whereBlock.LT;
-            if (Object.keys(this.LT).length !== 1) { throw new InsightError("LT not 1 field"); }
+            if (Object.keys(this.LT).length !== 1) {
+ throw new InsightError("LT not 1 field");
+}
             let pair: MKey = new MKey(this.comparedField);
             pair.validate();
             this.IDstrings.push(pair.getIDstring());
@@ -144,7 +156,9 @@ export class Filter {
     }
 
     public validateSComparators() {
-        if (Object.keys(this.whereBlock.IS).length !== 1) { throw new InsightError("IS not 1 field"); }
+        if (Object.keys(this.whereBlock.IS).length !== 1) {
+ throw new InsightError("IS not 1 field");
+}
         let pair: SKey = new SKey(this.comparedField);
         this.IS = pair;
         this.IS.validate();
@@ -153,7 +167,9 @@ export class Filter {
 
     public validateNegationComparators() {
 
-        if (Object.keys(this.whereBlock.NOT).length !== 1) { throw new InsightError("not 1 field"); }
+        if (Object.keys(this.whereBlock.NOT).length !== 1) {
+ throw new InsightError("not 1 field");
+}
         let query: any = { WHERE: this.whereBlock.NOT };
         let newFilter: Filter = new Filter(query);
         this.NOT = newFilter;

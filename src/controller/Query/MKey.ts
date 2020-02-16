@@ -33,9 +33,11 @@ export class MKey {
 
     public validateMField() {
         if (! this.mfields.includes(this.field)) {
-            throw new InsightError("Invalid key courses_xxx in COLUMNS"); }
+            throw new InsightError("Invalid key courses_xxx in COLUMNS");
+}
         if (typeof this.value !== "number") {
-            throw new InsightError("wrong type in Mfield"); }
+            throw new InsightError("wrong type in Mfield");
+}
         }
 
     public parseMComparator (dataPoint: any) {

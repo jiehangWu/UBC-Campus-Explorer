@@ -1,5 +1,9 @@
 import Log from "../Util";
-import { IInsightFacade, InsightDataset, InsightDatasetKind, NotFoundError, ResultTooLargeError } from "./IInsightFacade";
+import { IInsightFacade,
+    InsightDataset,
+    InsightDatasetKind,
+    NotFoundError,
+    ResultTooLargeError } from "./IInsightFacade";
 import { InsightError } from "./IInsightFacade";
 import { DatasetController } from "./DatasetController";
 import Query from "./Query/Query";

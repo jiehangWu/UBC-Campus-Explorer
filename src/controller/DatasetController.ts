@@ -116,7 +116,7 @@ export class DatasetController {
 
                     if (kind === InsightDatasetKind.Courses) {
                         this.addCourseDataset(id, zip, kind)
-                            .then((result: any) => {
+                            .then((result: number) => {
                                 this.datasets.set(id, { id: id, kind: kind, numRows: result });
                                 resolve();
                             });
@@ -124,7 +124,7 @@ export class DatasetController {
 
                     if (kind === InsightDatasetKind.Rooms) {
                         this.addRoomDataset(id, zip, kind)
-                            .then((result: any) => {
+                            .then((result: number) => {
                                 this.datasets.set(id, { id: id, kind: kind, numRows: result });
                                 resolve();
                             });
@@ -151,7 +151,7 @@ export class DatasetController {
                 });
 
             promises.push(fileContents);
-        })
+        });
 
         return Promise.all(promises)
             .then((contents: any[]) => {
@@ -178,14 +178,14 @@ export class DatasetController {
                 this.htmlController.processBuildingPage(content, zip)
                     .then((rooms: IRoom[][]) => {
                         let roomArr: IRoom[] = [];
-                        for (let i = 0; i < rooms.length; i++) {
-                            for (let j = 0; j < rooms[i].length; j++) {
-                                roomArr.push(rooms[i][j]);
+                        for (let row of rooms) {
+                            for (let element of row) {
+                                roomArr.push(element);
                             }
                         }
                         this.saveToDisk(id, roomArr, kind);
                         // this.datasets.set(id, {id: id, kind: kind, numRows: roomArr.length});
-                        Promise.resolve(roomArr.length);
+                        return Promise.resolve(roomArr.length);
                     })
                     .catch((err: any) => {
                         Log.error(err);

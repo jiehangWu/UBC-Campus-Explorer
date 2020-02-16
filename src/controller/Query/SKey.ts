@@ -17,7 +17,9 @@ export class SKey {
     public validate() {
         this.validateSField();
         this.validateIDString();
-        if (this.value.includes("*")) { this.validateAsterisk(); }
+        if (this.value.includes("*")) {
+ this.validateAsterisk();
+}
     }
 
     private splitPair(pair: string) {
@@ -31,6 +33,7 @@ export class SKey {
             throw new InsightError("Referenced dataset coures not added yet");
         }
     }
+
     private validateSField() {
         if (!this.sfields.includes(this.field)) {
             throw new InsightError("Invalid key courses_xxx in COLUMNS");
