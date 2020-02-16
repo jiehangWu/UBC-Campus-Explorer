@@ -32,6 +32,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         validAndInvalid: "./test/data/validAndInvalid.zip",
         coursesInvalidFile: "./test/data/coursesContainsOnlyInvalidFile.zip",
         invalidName: "./test/data/invalidName.zip",
+        rooms: "./test/data/rooms.zip"
     };
     let datasets: { [id: string]: string } = {};
     let insightFacade: InsightFacade;
@@ -69,7 +70,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         Log.test(`AfterTest: ${this.currentTest.title}`);
     });
 
-    // // This is a unit test. You should create more like this!
+    // This is a unit test. You should create more like this!
     // it("Should add a valid dataset", function () {
     //     const id: string = "courses";
     //     const expected: string[] = [id];
@@ -84,6 +85,21 @@ describe("InsightFacade Add/Remove Dataset", function () {
     //             expect.fail(err, expected, "Should not have rejected");
     //         });
     // });
+
+    it("Should add a valid room dataset", function () {
+        const id: string = "rooms";
+        const expected: string[] = [id];
+
+        return insightFacade
+            .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
+            .then((result: string[]) => {
+                expect(result).to.deep.equal(expected);
+            })
+            .catch((err: any) => {
+                Log.error(err);
+                expect.fail(err, expected, "Should not have rejected");
+            });
+    });
 
     // // it.only("Should add multiple dataset", function () {
     // //     const id1: string = "courses";
