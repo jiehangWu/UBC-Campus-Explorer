@@ -300,10 +300,10 @@ describe("InsightFacade Add/Remove Dataset", function () {
     // Remove tests start from here
     // --------------------------------------------------------------------------------
     it("Should be able to remove a existing dataset given a valid id", function () {
-        const id: string = "courses";
+        const id: string = "rooms";
 
         return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Courses)
+            .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
             .then(() => {
                 return insightFacade
                     .removeDataset(id)
@@ -435,7 +435,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             {
                 id: "rooms",
                 kind: InsightDatasetKind.Rooms,
-                numRows: 346,
+                numRows: 364,
             },
         ];
 

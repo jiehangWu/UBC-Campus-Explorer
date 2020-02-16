@@ -94,7 +94,7 @@ export default class HtmlController {
                 .then((result: GeoResponse) => {
                     if (this.httpController.checkValidityOfGeoResponse(result)) {
                         roomDetails.forEach((roomDetail: IRoomDetail) => {
-                            if (roomDetail !== null && result !== null && result !== undefined) {
+                            if (roomDetail !== null) {
                                 rooms.push({
                                     fullname: building.fullname,
                                     shortname: building.shortname,

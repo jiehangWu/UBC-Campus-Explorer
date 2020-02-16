@@ -4,22 +4,8 @@ import * as JSZip from "jszip";
 import * as fs from "fs-extra";
 import Log from "../Util";
 import HtmlController from "./HtmlController";
-import IBuilding from "../model/IBuilding";
 import IRoom from "../model/IRoom";
-import { rejects } from "assert";
-
-interface ICourse {
-    dept: string;
-    id: string;
-    avg: number;
-    instructor: string;
-    title: string;
-    pass: number;
-    fail: number;
-    audit: number;
-    uuid: string;
-    year: number;
-}
+import ICourse from "../model/ICourse";
 
 export class DatasetController {
     public datasets: Map<string, InsightDataset>;
@@ -28,6 +14,138 @@ export class DatasetController {
     public constructor() {
         this.datasets = new Map();
         this.htmlController = new HtmlController();
+    }
+
+
+    public validateId(id: string): boolean {
+        // check if id is null or undefined
+        if (typeof id === "undefined" || id === null) {
+            return false;
+        }
+        // "_" should not be included in id
+        if (id.includes("_")) {
+            return false;
+        }
+        // check if a string contains only whitespaces
+        if (id.trim() === "" || id === "") {
+            return false;
+        }
+
+        return true;
+    }
+
+    public removeDataset(id: string): Promise<string> {
+        if (!this.validateId(id)) {
+            return Promise.reject(new InsightError("This id is invalid"));
+        }
+
+        let path = "./data/" + id + "/" + id + ".json";
+
+        if (fs.existsSync(path) && this.datasets.has(id)) {
+            fs.unlinkSync(path);
+
+            this.datasets.delete(id);
+
+            return Promise.resolve(id);
+        } else {
+            return Promise.reject(new NotFoundError("ID is not in the dataset"));
+        }
+    }
+
+    // to be refactored
+    public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<any> {
+        return new Promise((resolve, reject) => {
+
+
+            new JSZip().loadAsync(content, { base64: true })
+                .then((zip: JSZip) => {
+                    if (zip.folder(kind).length === 0) {
+                        reject(new InsightError("Does not contain valid file"));
+                    }
+
+                    if (kind === InsightDatasetKind.Courses) {
+                        this.addCourseDataset(id, zip, kind)
+                            .then((result: [string, number]) => {
+                                this.datasets.set(id, { id: result[0], kind: kind, numRows: result[1] });
+                                resolve();
+                            });
+                    }
+
+                    if (kind === InsightDatasetKind.Rooms) {
+                        this.addRoomDataset(id, zip, kind)
+                            .then((result: [string, number]) => {
+                                this.datasets.set(id, { id: result[0], kind: kind, numRows: result[1] });
+                                resolve();
+                            });
+                    }
+
+                })
+                .catch((err: any) => {
+                    reject(new InsightError("Can not loadAsync"));
+                });
+        });
+    }
+
+    private addCourseDataset(id: string, zip: JSZip, kind: InsightDatasetKind): Promise<any> {
+        let promises: Array<Promise<string>> = [];
+        return new Promise((resolve, reject) => {
+            zip.folder(kind).forEach((_, file: JSZipObject) => {
+                let fileContents: Promise<string> = file.async("text")
+                    .then((body: string) => {
+                        return this.parseJson(body);
+                    })
+                    .catch((err: any) => {
+                        Log.error(err);
+                        return null;
+                    });
+
+                promises.push(fileContents);
+            });
+
+            return Promise.all(promises)
+                .then((contents: any[]) => {
+                    this.parseFileContents(contents)
+                        .then((courses: ICourse[]) => {
+                            if (courses.length >= 1) {
+                                this.saveToDisk(id, courses, kind);
+                                resolve(courses.length);
+                            } else {
+                                reject(new InsightError("This dataset does not contain a valid section"));
+                            }
+                        });
+                })
+                .catch((err: any) => {
+                    return Promise.reject(new InsightError("Can not Promise.all"));
+                });
+        });
+    }
+
+    // to be refactored
+    private addRoomDataset(id: string, zip: JSZip, kind: InsightDatasetKind): Promise<[string, number]> {
+        return new Promise((resolve, reject) => {
+            zip.folder(kind).file("index.htm").async("text")
+                .then((content: string) => {
+                    this.htmlController.processBuildingPage(content, zip)
+                        .then((rooms: IRoom[][]) => {
+                            let roomArr: IRoom[] = [];
+                            for (let row of rooms) {
+                                for (let element of row) {
+                                    roomArr.push(element);
+                                }
+                            }
+                            this.saveToDisk(id, roomArr, kind);
+                            resolve([id, roomArr.length]);
+                        })
+                        .catch((err: any) => {
+                            Log.error(err);
+                            reject(err);
+                        });
+                })
+                .catch((err: any) => {
+                    Log.error(err);
+                    reject(err);
+                });
+        });
     }
 
     private parseFileContents(fileContents: any[]): Promise<ICourse[]> {
@@ -84,118 +202,6 @@ export class DatasetController {
         }
 
         fs.writeFileSync(dir + "/" + id + ".json", JSON.stringify(data));
-    }
-
-    public validateId(id: string): boolean {
-        // check if id is null or undefined
-        if (typeof id === "undefined" || id === null) {
-            return false;
-        }
-        // "_" should not be included in id
-        if (id.includes("_")) {
-            return false;
-        }
-        // check if a string contains only whitespaces
-        if (id.trim() === "" || id === "") {
-            return false;
-        }
-
-        return true;
-    }
-
-    // to be refactored
-    public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<any> {
-        return new Promise((resolve, reject) => {
-
-
-            new JSZip().loadAsync(content, { base64: true })
-                .then((zip: JSZip) => {
-                    if (zip.folder(kind).length === 0) {
-                        reject(new InsightError("Does not contain valid file"));
-                    }
-
-                    if (kind === InsightDatasetKind.Courses) {
-                        this.addCourseDataset(id, zip, kind)
-                            .then((result: number) => {
-                                this.datasets.set(id, { id: id, kind: kind, numRows: result });
-                                resolve();
-                            });
-                    }
-
-                    if (kind === InsightDatasetKind.Rooms) {
-                        this.addRoomDataset(id, zip, kind)
-                            .then((result: number) => {
-                                this.datasets.set(id, { id: id, kind: kind, numRows: result });
-                                resolve();
-                            });
-                    }
-
-                })
-                .catch((err: any) => {
-                    reject(new InsightError("Can not loadAsync"));
-                });
-        });
-    }
-
-    private addCourseDataset(id: string, zip: JSZip, kind: InsightDatasetKind): Promise<any> {
-        let promises: Array<Promise<string>> = [];
-
-        zip.folder(kind).forEach((_, file: JSZipObject) => {
-            let fileContents: Promise<string> = file.async("text")
-                .then((body: string) => {
-                    return this.parseJson(body);
-                })
-                .catch((err: any) => {
-                    Log.error(err);
-                    return null;
-                });
-
-            promises.push(fileContents);
-        });
-
-        return Promise.all(promises)
-            .then((contents: any[]) => {
-                this.parseFileContents(contents)
-                    .then((courses: ICourse[]) => {
-                        if (courses.length >= 1) {
-                            this.saveToDisk(id, courses, kind);
-                            // this.datasets.set(id, {id: id, kind: kind, numRows: courses.length});
-                            return Promise.resolve(courses.length);
-                        } else {
-                            Promise.reject(new InsightError("This dataset does not contain a valid section"));
-                        }
-                    });
-            })
-            .catch((err: any) => {
-                return Promise.reject(new InsightError("Can not Promise.all"));
-            });
-    }
-
-    // to be refactored
-    private addRoomDataset(id: string, zip: JSZip, kind: InsightDatasetKind): Promise<any> {
-        return zip.folder(kind).file("index.htm").async("text")
-            .then((content: string) => {
-                this.htmlController.processBuildingPage(content, zip)
-                    .then((rooms: IRoom[][]) => {
-                        let roomArr: IRoom[] = [];
-                        for (let row of rooms) {
-                            for (let element of row) {
-                                roomArr.push(element);
-                            }
-                        }
-                        this.saveToDisk(id, roomArr, kind);
-                        // this.datasets.set(id, {id: id, kind: kind, numRows: roomArr.length});
-                        return Promise.resolve(roomArr.length);
-                    })
-                    .catch((err: any) => {
-                        Log.error(err);
-                        Promise.reject(err);
-                    });
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                Promise.reject(err);
-            });
     }
 
     private parseJson(body: string): string {

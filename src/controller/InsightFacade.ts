@@ -46,21 +46,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        if (!this.datasetController.validateId(id)) {
-            return Promise.reject(new InsightError("This id is invalid"));
-        }
-
-        let path = "./data/" + "courses" + "/" + id + ".json";
-
-        if (fs.existsSync(path) && this.datasetController.datasets.has(id)) {
-            fs.unlinkSync(path);
-
-            this.datasetController.datasets.delete(id);
-
-            return Promise.resolve(id);
-        } else {
-            return Promise.reject(new NotFoundError("ID is not in the dataset"));
-        }
+       return this.datasetController.removeDataset(id);
     }
 
     public listDatasets(): Promise<InsightDataset[]> {

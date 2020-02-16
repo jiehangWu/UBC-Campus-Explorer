@@ -1,6 +1,5 @@
 import GeoResponse from "../model/GeoResponse";
 import Log from "../Util";
-import {InsightError} from "./IInsightFacade";
 const http = require("http");
 
 export default class HttpController {
@@ -43,7 +42,7 @@ export default class HttpController {
             })
             .on("error", (err: any) => {
                 Log.error(err);
-                reject();
+                resolve();
             });
         });
     }
