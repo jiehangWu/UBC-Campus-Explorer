@@ -8,9 +8,6 @@ export class Options {
     public IDstrings: string[];
     private allFields4Courses: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
     "dept" , "id" , "instructor" , "title" , "uuid"];
-    private allFields4Rooms: string[] = ["lat" , "lon" , "seats" , "fullname" , "shortname" ,
-     "number" , "name" , "address" , "type" , "furniture" , "href" ];
-    //  should also plus the apply keys
 
     public quiredFields: string[];
     public orderField: string;
@@ -130,7 +127,6 @@ export class Options {
 
         this.IDstrings = this.IDstrings.concat(IDinColumn);
         this.quiredFields = displayField;
-
     }
 
     //  checking the validity of keys in columns and giving back the result to validate columns, has to separate because

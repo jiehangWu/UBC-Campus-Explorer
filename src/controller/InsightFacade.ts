@@ -1,9 +1,14 @@
 import Log from "../Util";
-import {IInsightFacade, InsightDataset, InsightDatasetKind, NotFoundError, ResultTooLargeError} from "./IInsightFacade";
+import { IInsightFacade,
+    InsightDataset,
+    InsightDatasetKind,
+    NotFoundError,
+    ResultTooLargeError } from "./IInsightFacade";
 import { InsightError } from "./IInsightFacade";
 import { DatasetController } from "./DatasetController";
 import Query from "./Query/Query";
 import * as fs from "fs-extra";
+import { stringify } from "querystring";
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -25,23 +30,15 @@ export default class InsightFacade implements IInsightFacade {
                 return Promise.reject(new InsightError("Database already contains the same id"));
             }
 
-            if (kind === InsightDatasetKind.Courses) {
-                return this.datasetController.addCourseDataset(id, content, kind)
-                    .then((result: [string, number]) => {
-                        this.datasetController.datasets.set(id,
-                            {
-                                id: result[0],
-                                kind: kind,
-                                numRows: result[1]
-                            });
-                        return Promise.resolve(Array.from(this.datasetController.datasets.keys()));
-                    })
-                    .catch((err: any) => {
-                        return Promise.reject(new InsightError("Can not add course dataset"));
-                    });
-            } else {
-                return Promise.reject(new InsightError("Invalid InsightDatasetKind"));
-            }
+            return this.datasetController.addDataset(id, content, kind)
+                .then(() => {
+                    return Promise.resolve(Array.from(this.datasetController.datasets.keys()));
+                })
+                .catch((err: any) => {
+                    Log.error(err);
+                    return Promise.reject(new InsightError("Can not add dataset"));
+                });
+
 
         } else {
             return Promise.reject(new InsightError("This id is invalid"));
@@ -49,21 +46,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        if (!this.datasetController.validateId(id)) {
-            return Promise.reject(new InsightError("This id is invalid"));
-        }
-
-        let path = "./data/" + "courses" + "/" + id + ".json";
-
-        if (fs.existsSync(path) && this.datasetController.datasets.has(id)) {
-            fs.unlinkSync(path);
-
-            this.datasetController.datasets.delete(id);
-
-            return Promise.resolve(id);
-        } else {
-            return Promise.reject(new NotFoundError("ID is not in the dataset"));
-        }
+       return this.datasetController.removeDataset(id);
     }
 
     public listDatasets(): Promise<InsightDataset[]> {

@@ -34,7 +34,6 @@ export default class Query {
         if (!this.keyset.includes("WHERE"))          { throw new InsightError("missing WHERE"); }
         if (typeof query.WHERE !== "object")         { throw new InsightError("WHERE not an obj"); }
         if (Object.keys(query.WHERE).length > 1)     { throw new InsightError("WHERE should at most have 1 key"); }
-
         if (Object.keys(query.WHERE).length === 0) {
             this.emptyWhere = true;
         } else {
