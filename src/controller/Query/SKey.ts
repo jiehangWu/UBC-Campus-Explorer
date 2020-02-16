@@ -5,8 +5,9 @@ export class SKey {
     public idString: string;
     public field: string;
     public value: string;
-    private dataset: string[] = ["courses"];
-    private sfields: string[] = ["dept", "id", "instructor", "title", "uuid"];
+    private dataset: string[] = ["courses", "rooms"];
+    private sfieldsC: string[] = ["dept", "id", "instructor", "title", "uuid"];
+    private sfieldsR: string[] = ["fullname", "shortname", "number", "name", "address", "type", "furniture", "href" ];
 
     public constructor(pair: any) {
         this.key = Object.keys(pair)[0];
@@ -16,10 +17,7 @@ export class SKey {
 
     public validate() {
         this.validateSField();
-        this.validateIDString();
-        if (this.value.includes("*")) {
- this.validateAsterisk();
-}
+        if (this.value.includes("*")) { this.validateAsterisk(); }
     }
 
     private splitPair(pair: string) {
@@ -28,16 +26,17 @@ export class SKey {
         this.field = str[1];
     }
 
-    private validateIDString() {
-        if (!this.dataset.includes(this.idString)) {
-            throw new InsightError("Referenced dataset coures not added yet");
-        }
-    }
-
     private validateSField() {
-        if (!this.sfields.includes(this.field)) {
-            throw new InsightError("Invalid key courses_xxx in COLUMNS");
+        if (this.idString === "courses") {
+            if (!this.sfieldsC.includes(this.field)) {
+                throw new InsightError("Invalid key courses_xxx in COLUMNS");
+            }
+        } else if (this.idString === "rooms") {
+            if (!this.sfieldsR.includes(this.field)) {
+                throw new InsightError("Invalid key courses_xxx in COLUMNS");
+            }
         }
+
         if (typeof this.value !== "string") {
             throw new InsightError("wrong type in Sfield");
         }
@@ -46,6 +45,7 @@ export class SKey {
     public getIDstring(): string {
         return this.idString;
     }
+
 
     private validateAsterisk() {
         let flag: boolean = false;
