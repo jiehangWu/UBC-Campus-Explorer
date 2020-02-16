@@ -1,0 +1,38 @@
+{
+    "title": "D2 valid group",
+    "query": {
+        "WHERE": {
+          "OR": [
+            {
+              "EQ": {
+                "courses_avg": 97
+              }
+            },
+            {
+              "IS": {
+                "courses_dept": "lfs"
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "courses_title",
+            " try",
+            "courses_dept"
+          ]
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": ["courses_title",
+                   "courses_dept"],
+          "APPLY": [
+            {
+              " try": {
+                "SUM": "courses_avg"
+              }
+            }
+          ]
+        }
+      },
+    "isQueryValid": true,
+    "result":[{"courses_title":"thesis"," try":97,"courses_dept":"crwr"},{"courses_title":"acad assess schl"," try":97,"courses_dept":"epse"},{"courses_title":"in land food com"," try":1239.53,"courses_dept":"lfs"},{"courses_title":"schol writ&argue"," try":974.61,"courses_dept":"lfs"},{"courses_title":"lnd,fod&comm i"," try":2634.76,"courses_dept":"lfs"},{"courses_title":"lnd, food&comnty"," try":1333.04,"courses_dept":"lfs"},{"courses_title":"hlth&trad plnts"," try":149.72,"courses_dept":"lfs"},{"courses_title":"land food comm 2"," try":1877.27,"courses_dept":"lfs"},{"courses_title":"dig comm&tpcs ag"," try":681.7,"courses_dept":"lfs"},{"courses_title":"audio strytellng"," try":474.02,"courses_dept":"lfs"},{"courses_title":"land food comm 3"," try":1135.12,"courses_dept":"lfs"},{"courses_title":"integ knowledge"," try":869.88,"courses_dept":"lfs"},{"courses_title":"masters thesis"," try":97,"courses_dept":"psyc"}]}

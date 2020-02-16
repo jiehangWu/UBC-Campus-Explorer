@@ -17,7 +17,6 @@ export class SKey {
 
     public validate() {
         this.validateSField();
-        // this.validateIDString();
         if (this.value.includes("*")) { this.validateAsterisk(); }
     }
 
@@ -26,12 +25,6 @@ export class SKey {
         this.idString = str[0];
         this.field = str[1];
     }
-
-    // private validateIDString() {
-    //     if (!this.dataset.includes(this.idString)) {
-    //         throw new InsightError("Referenced dataset coures not added yet");
-    //     }
-    // }
 
     private validateSField() {
         if (this.idString === "courses") {

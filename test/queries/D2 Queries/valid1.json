@@ -1,0 +1,40 @@
+{
+    "title": "D2 valid group",
+    "query": {
+        "WHERE": {
+          "OR": [
+            {
+              "EQ": {
+                "courses_avg": 97
+              }
+            },
+            {
+              "IS": {
+                "courses_dept": "lfs"
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "courses_title",
+            "overallAvg",
+            "courses_dept"
+          ]
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "courses_title",
+            "courses_dept"
+          ],
+          "APPLY": [
+            {
+              "overallAvg": {
+                "AVG": "courses_avg"
+              }
+            }
+          ]
+        }
+      },
+    "isQueryValid": true,
+    "result":[{"courses_title":"thesis","overallAvg":97,"courses_dept":"crwr"},{"courses_title":"acad assess schl","overallAvg":97,"courses_dept":"epse"},{"courses_title":"in land food com","overallAvg":68.86,"courses_dept":"lfs"},{"courses_title":"schol writ&argue","overallAvg":74.97,"courses_dept":"lfs"},{"courses_title":"lnd,fod&comm i","overallAvg":77.49,"courses_dept":"lfs"},{"courses_title":"lnd, food&comnty","overallAvg":78.41,"courses_dept":"lfs"},{"courses_title":"hlth&trad plnts","overallAvg":74.86,"courses_dept":"lfs"},{"courses_title":"land food comm 2","overallAvg":81.62,"courses_dept":"lfs"},{"courses_title":"dig comm&tpcs ag","overallAvg":85.21,"courses_dept":"lfs"},{"courses_title":"audio strytellng","overallAvg":79,"courses_dept":"lfs"},{"courses_title":"land food comm 3","overallAvg":81.08,"courses_dept":"lfs"},{"courses_title":"integ knowledge","overallAvg":86.99,"courses_dept":"lfs"},{"courses_title":"masters thesis","overallAvg":97,"courses_dept":"psyc"}]}

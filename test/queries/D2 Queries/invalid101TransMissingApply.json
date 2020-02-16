@@ -1,0 +1,33 @@
+{
+    "title": "TRANSFORMATIONS missing GROUP",
+    "query":  {
+        "WHERE": {
+          "OR": [
+            {
+              "GT": {
+                "courses_avg": 97
+              }
+            },
+            {
+              "IS": {
+                "courses_dept": "lfs"
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "overallAvg",
+            "courses_dept",
+            "courses_instructor"
+          ]
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "courses_dept",
+            "courses_instructor"
+          ]
+        }
+      },
+    "isQueryValid": false,
+    "result":"InsightError"}

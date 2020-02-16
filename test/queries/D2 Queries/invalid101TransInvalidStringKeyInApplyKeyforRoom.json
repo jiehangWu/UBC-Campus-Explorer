@@ -1,0 +1,47 @@
+{
+    "title": " Invalid key rooms_loc in AVG",
+    "query": {
+        "WHERE": {
+          "OR": [
+            {
+              "EQ": {
+                "rooms_seats": 97
+              }
+            },
+            {
+              "IS": {
+                "rooms_fullname": ""
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "rooms_number",
+            "overallAvg",
+            "rooms_seats"
+          ],
+          "ORDER": {
+            "dir": "DOWN",
+            "keys": [
+              "overallAvg",
+              "rooms_seats"
+            ]
+          }
+        },
+        "TRANSFORMATIONS": {
+          "APPLY": [
+            {
+              "overallAvg": {
+                "AVG": "rooms_loc"
+              }
+            }
+          ],
+          "GROUP": [
+            "rooms_number",
+            "rooms_seats"
+          ]
+        }
+      },
+    "isQueryValid": false,
+    "result":"InsightError"}
