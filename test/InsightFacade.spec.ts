@@ -472,6 +472,10 @@ describe("InsightFacade Add/Remove Dataset", function () {
 //             path: "./test/data/courses.zip",
 //             kind: InsightDatasetKind.Courses,
 //         },
+//         rooms: {
+//             path: "./test/data/rooms.zip",
+//             kind: InsightDatasetKind.Rooms,
+//         }
 //     };
 //     let insightFacade: InsightFacade;
 //     let testQueries: ITestQuery[] = [];

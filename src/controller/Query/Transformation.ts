@@ -95,6 +95,10 @@ export default class Transformation {
                 this.IDstrings.push(idstring);
 
             });
+            if ((new Set(this.applyKeys)).size !== this.applyKeys.length) {
+                throw new InsightError("Duplicate keys in applykeys");
+            }
+
         }
     }
     // keys in apply and gorup should cover all that in columns
@@ -130,9 +134,11 @@ export default class Transformation {
         this.APPLY.forEach((rule: Applyrule) => {
             rule = new Applyrule(rule);
             rule.runRule(intermediate);
-            intermediate.forEach((singleObj: any) => {
-                delete singleObj["data"];
-            });
+
+            // don't really need this, since we gonna filter out the unnecessary fields
+            // intermediate.forEach((singleObj: any) => {
+            //     delete singleObj["data"];
+            // });
         });
         return intermediate;
     }
