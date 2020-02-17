@@ -1,0 +1,41 @@
+{
+    "title": "all features",
+    "query": {
+        "WHERE": {
+          "OR": [
+            {
+              "GT": {
+                "rooms_seats": 150
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "rooms_type",
+            " a",
+            "rooms_seats",
+            "nothingBUTlAT"
+          ]
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "rooms_seats",
+            "rooms_type"
+          ],
+          "APPLY": [
+            {
+              " a": {
+                "MIN": "rooms_seats"
+              }
+            },
+            {
+              "nothingBUTlAT": {
+                "COUNT": "rooms_lat"
+              }
+            }
+          ]
+        }
+      },
+    "isQueryValid": true,
+    "result":[{"rooms_type":"Tiered Large Group"," a":228,"rooms_seats":228,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":275,"rooms_seats":275,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":181,"rooms_seats":181,"nothingBUTlAT":2},{"rooms_type":"Tiered Large Group"," a":426,"rooms_seats":426,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":200,"rooms_seats":200,"nothingBUTlAT":2},{"rooms_type":"Tiered Large Group"," a":265,"rooms_seats":265,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":240,"rooms_seats":240,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":350,"rooms_seats":350,"nothingBUTlAT":2},{"rooms_type":"Tiered Large Group"," a":250,"rooms_seats":250,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":160,"rooms_seats":160,"nothingBUTlAT":2},{"rooms_type":"Tiered Large Group"," a":225,"rooms_seats":225,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":375,"rooms_seats":375,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":257,"rooms_seats":257,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":155,"rooms_seats":155,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":260,"rooms_seats":260,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":154,"rooms_seats":154,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":205,"rooms_seats":205,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":183,"rooms_seats":183,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":224,"rooms_seats":224,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":280,"rooms_seats":280,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":236,"rooms_seats":236,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":167,"rooms_seats":167,"nothingBUTlAT":1},{"rooms_type":"Open Design General Purpose"," a":442,"rooms_seats":442,"nothingBUTlAT":1},{"rooms_type":"TBD"," a":299,"rooms_seats":299,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":325,"rooms_seats":325,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":187,"rooms_seats":187,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":188,"rooms_seats":188,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":190,"rooms_seats":190,"nothingBUTlAT":1},{"rooms_type":"Tiered Large Group"," a":503,"rooms_seats":503,"nothingBUTlAT":1}]}

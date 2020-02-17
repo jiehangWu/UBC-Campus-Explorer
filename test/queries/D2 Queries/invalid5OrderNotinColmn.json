@@ -1,0 +1,44 @@
+{
+    "title": "All ORDER keys must be in COLUMNS",
+    "query": {
+      "WHERE": {
+        "OR": [
+          {
+            "EQ": {
+              "rooms_seats": 97
+            }
+          },
+          {
+            "IS": {
+              "rooms_fullname": ""
+            }
+          }
+        ]
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "rooms_number",
+          "overallAvg",
+          "rooms_seats"
+        ],
+          "ORDER": {
+                "dir": "DOWN",
+                "keys": ["maxSeats"]
+            }
+        },
+      "TRANSFORMATIONS": {
+        "GROUP": [
+          "rooms_seats",
+          "rooms_number"
+        ],
+        "APPLY": [
+          {
+            "overallAvg": {
+              "AVG": "rooms_seats"
+            }
+          }
+        ]
+      }
+    },
+    "isQueryValid": false,
+    "result":"InsightError"}

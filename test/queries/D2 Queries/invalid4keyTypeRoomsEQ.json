@@ -1,0 +1,40 @@
+{
+    "title": "Invalid value type in EQ, should be string",
+    "query": {
+      "WHERE": {
+        "OR": [
+          {
+            "EQ": {
+              "rooms_fullname": 97
+            }
+          },
+          {
+            "IS": {
+              "rooms_dept": "lfs"
+            }
+          }
+        ]
+      },
+      "OPTIONS": {
+        "COLUMNS": [
+          "rooms_title",
+          "overallAvg",
+          "rooms_dept"
+        ]
+      },
+      "TRANSFORMATIONS": {
+        "GROUP": [
+          "rooms_title",
+          "rooms_dept"
+        ],
+        "APPLY": [
+          {
+            "overallAvg": {
+              "AVG": "rooms_avg"
+            }
+          }
+        ]
+      }
+    },
+    "isQueryValid": false,
+    "result":"InsightError"}

@@ -1,0 +1,42 @@
+{
+    "title": " Invalid key type in MIN",
+    "query": {
+        "WHERE": {
+          "OR": [
+            {
+              "GT": {
+                "courses_avg": 97
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "courses_avg",
+            " a",
+            "courses_dept"
+          ],
+          "ORDER": {
+            "dir": "UP",
+            "keys": [
+              " a",
+              "courses_avg"
+            ]
+          }
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+            "courses_dept",
+            "courses_avg"
+          ],
+          "APPLY": [
+            {
+              " a": {
+                "MIN": "courses_instructor"
+              }
+            }
+          ]
+        }
+      },
+    "isQueryValid": false,
+    "result":"InsightError"}

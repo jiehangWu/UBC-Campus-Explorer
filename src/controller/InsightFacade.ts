@@ -1,9 +1,14 @@
 import Log from "../Util";
-import {IInsightFacade, InsightDataset, InsightDatasetKind, NotFoundError, ResultTooLargeError} from "./IInsightFacade";
+import { IInsightFacade,
+    InsightDataset,
+    InsightDatasetKind,
+    NotFoundError,
+    ResultTooLargeError } from "./IInsightFacade";
 import { InsightError } from "./IInsightFacade";
 import { DatasetController } from "./DatasetController";
 import Query from "./Query/Query";
 import * as fs from "fs-extra";
+import { stringify } from "querystring";
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -25,23 +30,15 @@ export default class InsightFacade implements IInsightFacade {
                 return Promise.reject(new InsightError("Database already contains the same id"));
             }
 
-            if (kind === InsightDatasetKind.Courses) {
-                return this.datasetController.addCourseDataset(id, content, kind)
-                    .then((result: [string, number]) => {
-                        this.datasetController.datasets.set(id,
-                            {
-                                id: result[0],
-                                kind: kind,
-                                numRows: result[1]
-                            });
-                        return Promise.resolve(Array.from(this.datasetController.datasets.keys()));
-                    })
-                    .catch((err: any) => {
-                        return Promise.reject(new InsightError("Can not add course dataset"));
-                    });
-            } else {
-                return Promise.reject(new InsightError("Invalid InsightDatasetKind"));
-            }
+            return this.datasetController.addDataset(id, content, kind)
+                .then(() => {
+                    return Promise.resolve(Array.from(this.datasetController.datasets.keys()));
+                })
+                .catch((err: any) => {
+                    Log.error(err);
+                    return Promise.reject(new InsightError("Can not add dataset"));
+                });
+
 
         } else {
             return Promise.reject(new InsightError("This id is invalid"));
@@ -49,21 +46,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        if (!this.datasetController.validateId(id)) {
-            return Promise.reject(new InsightError("This id is invalid"));
-        }
-
-        let path = "./data/" + "courses" + "/" + id + ".json";
-
-        if (fs.existsSync(path) && this.datasetController.datasets.has(id)) {
-            fs.unlinkSync(path);
-
-            this.datasetController.datasets.delete(id);
-
-            return Promise.resolve(id);
-        } else {
-            return Promise.reject(new NotFoundError("ID is not in the dataset"));
-        }
+       return this.datasetController.removeDataset(id);
     }
 
     public listDatasets(): Promise<InsightDataset[]> {
@@ -72,15 +55,12 @@ export default class InsightFacade implements IInsightFacade {
 
     public performQuery(query: any): Promise<any[]> {
         try {
-            if (!query) {
-                throw new InsightError("Query empty or ");
-            }
             const queryResult = new Query(query);
             queryResult.validate();
-            // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
-            let queriedID: string;
 
             // check if all elements in array is the same.
+            // https://stackoverflow.com/questions/14832603/check-if-all-values-of-array-are-equal/14832797
+            let queriedID: string;
             if (queryResult.IDstrings.every((val, _, arr) => val === arr[0])) {
                 queriedID = queryResult.IDstrings[0];
             } else {
@@ -92,7 +72,7 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile.
-            let path = "./data/courses/" + queriedID + ".json";
+            let path = "./data/" + queriedID + "/" + queriedID + ".json";
             let rawData: any = fs.readFileSync(path);
             let dataset = JSON.parse(rawData);
             let res = queryResult.processQuery(dataset);

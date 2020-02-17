@@ -1,0 +1,38 @@
+{
+    "title": "GROUP must be a non-empty array",
+    "query": {
+        "WHERE": {
+          "OR": [
+            {
+              "EQ": {
+                "courses_avg": 97
+              }
+            },
+            {
+              "IS": {
+                "courses_dept": "lfs"
+              }
+            }
+          ]
+        },
+        "OPTIONS": {
+          "COLUMNS": [
+            "courses_title",
+            "overallAvg",
+            "courses_dept"
+          ]
+        },
+        "TRANSFORMATIONS": {
+          "GROUP": [
+          ],
+          "APPLY": [
+            {
+              "overallAvg": {
+                "AVG": "courses_avg"
+              }
+            }
+          ]
+        }
+      },
+    "isQueryValid": false,
+    "result":"InsightError" }
