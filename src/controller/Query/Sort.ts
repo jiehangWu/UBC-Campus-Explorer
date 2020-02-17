@@ -11,9 +11,15 @@ export class Sort {
     public constructor(sortObj: any) {
         // this.keysInSort = [];
 
-        if (! Object.keys(sortObj).includes("dir") )    { throw new InsightError("missing dir"); }
-        if (! Object.keys(sortObj).includes("keys") )   { throw new InsightError("missing keys"); }
-        if ( Object.keys(sortObj).length !== 2 )        { throw new InsightError("excess key in sort"); }
+        if (! Object.keys(sortObj).includes("dir") ) {
+            throw new InsightError("missing dir");
+        }
+        if (! Object.keys(sortObj).includes("keys") ) {
+            throw new InsightError("missing keys");
+        }
+        if ( Object.keys(sortObj).length !== 2 ) {
+            throw new InsightError("excess key in sort");
+        }
         //  2 if blocks below to check if wrong key in options
         Object.keys(sortObj).forEach((key) => {
             if (! (key === "dir" || key === "keys")) {

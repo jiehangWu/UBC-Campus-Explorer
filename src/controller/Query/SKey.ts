@@ -17,7 +17,9 @@ export class SKey {
 
     public validate() {
         this.validateSField();
-        if (this.value.includes("*")) { this.validateAsterisk(); }
+        if (this.value.includes("*")) {
+            this.validateAsterisk();
+        }
     }
 
     private splitPair(pair: string) {

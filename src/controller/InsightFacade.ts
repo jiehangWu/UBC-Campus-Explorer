@@ -72,7 +72,7 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             // https://stackoverflow.com/questions/10058814/get-data-from-fs-readfile.
-            let path = "./data/courses/" + queriedID + ".json";
+            let path = "./data/" + queriedID + "/" + queriedID + ".json";
             let rawData: any = fs.readFileSync(path);
             let dataset = JSON.parse(rawData);
             let res = queryResult.processQuery(dataset);

@@ -10,6 +10,7 @@ export class Applyrule {
 
     private allFields4Courses: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
     "dept" , "id" , "instructor" , "title" , "uuid"];
+
     private allFields4Rooms: string[] = ["lat" , "lon" , "seats" , "fullname" , "shortname" ,
      "number" , "name" , "address" , "type" , "furniture" , "href" ];
 

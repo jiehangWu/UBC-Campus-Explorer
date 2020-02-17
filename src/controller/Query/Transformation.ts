@@ -24,9 +24,15 @@ export default class Transformation {
             }
         });
 
-        if (! Object.keys(transObj).includes("GROUP") )    { throw new InsightError("missing GROUP"); }
-        if (! Object.keys(transObj).includes("APPLY") )   { throw new InsightError("missing APPLY"); }
-        if ( Object.keys(transObj).length !== 2 )        { throw new InsightError("Trans should have two keys"); }
+        if (! Object.keys(transObj).includes("GROUP") ) {
+            throw new InsightError("missing GROUP");
+        }
+        if (! Object.keys(transObj).includes("APPLY") ) {
+            throw new InsightError("missing APPLY");
+        }
+        if ( Object.keys(transObj).length !== 2 ) {
+            throw new InsightError("Trans should have two keys");
+        }
 
         this.GROUP = transObj["GROUP"];
         this.APPLY = transObj["APPLY"];
