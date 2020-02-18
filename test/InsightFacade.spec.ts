@@ -299,164 +299,164 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
     // Remove tests start from here
     // --------------------------------------------------------------------------------
-    it("Should be able to remove a existing dataset given a valid id", function () {
-        const id: string = "rooms";
+    // it("Should be able to remove a existing dataset given a valid id", function () {
+    //     const id: string = "rooms";
 
-        return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
-            .then(() => {
-                return insightFacade
-                    .removeDataset(id)
-                    .then((result: string) => {
-                        if (fs.existsSync("./data/" + id + "/" + id + ".json")) {
-                            expect.fail();
-                        }
-                        expect(Array.from(insightFacade.datasetController.datasets.keys())).to.not.include(id);
-                        expect(result).to.deep.equal(id);
-                    })
-                    .catch((err: any) => {
-                        Log.error(err);
-                        expect.fail(err, id, "Should not be rejected");
-                    });
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, [id], "Should not be rejected");
-            });
-    });
-
-    it("Should throw InsightError given an invalid id with underscore when removing a dataset", function () {
-        const id: string = "cour_ses";
-
-        return insightFacade
-            .removeDataset(id)
-            .then((result: string) => {
-                expect.fail(result, id, "Should not fulfill");
-            })
-            .catch((err: any) => {
-                expect(err).to.be.instanceOf(InsightError);
-            });
-    });
-
-    it("Should throw InsightError given an invalid id with only whitespace when removing a dataset", function () {
-        const id: string = "     ";
-
-        return insightFacade
-            .removeDataset(id)
-            .then((result: string) => {
-                expect.fail(result, id, "Should not fulfill");
-            })
-            .catch((err: any) => {
-                expect(err).to.be.a.instanceOf(InsightError);
-            });
-    });
-
-    it("Should throw InsightError given a NULL id when removing a dataset", function () {
-        const id: string = null;
-
-        return insightFacade
-            .removeDataset(id)
-            .then((result: string) => {
-                expect.fail(result, "", "Should not fulfill");
-            })
-            .catch((err: any) => {
-                expect(err).to.be.a.instanceOf(InsightError);
-            });
-    });
-
-    it("Should throw InsightError given an undefined id when removing a dataset", function () {
-        const id: string = undefined;
-
-        return insightFacade
-            .removeDataset(id)
-            .then((result: string) => {
-                expect.fail(result, "", "Should not fulfill");
-            })
-            .catch((err: any) => {
-                expect(err).to.be.a.instanceOf(InsightError);
-            });
-    });
-
-    it("Should throw NotFoundError when removing a dataset that is not added given a valid id", function () {
-        const id: string = "courses";
-
-        return insightFacade
-            .removeDataset(id)
-            .then((result: string) => {
-                expect.fail(result, "", "Should not fulfill");
-            })
-            .catch((err: any) => {
-                expect(err).to.be.a.instanceOf(NotFoundError);
-            });
-    });
-
-    // it.only("Should be able to remove multiple valid datasets", function () {
-    //     const id1: string = "courses";
-    //     const id2: string = "courses2";
-
-    //     insightFacade.addDataset(
-    //         id1,
-    //         datasets[id1],
-    //         InsightDatasetKind.Courses,
-    //     );
-    //     insightFacade.addDataset(
-    //         id2,
-    //         datasets[id2],
-    //         InsightDatasetKind.Courses,
-    //     );
-
-    //     return insightFacade.removeDataset(id1)
-    //         .then((result: string) => {
-    //             expect(result).to.deep.equal(id1);
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
+    //         .then(() => {
+    //             return insightFacade
+    //                 .removeDataset(id)
+    //                 .then((result: string) => {
+    //                     if (fs.existsSync("./data/" + id + "/" + id + ".json")) {
+    //                         expect.fail();
+    //                     }
+    //                     expect(Array.from(insightFacade.datasetController.datasets.keys())).to.not.include(id);
+    //                     expect(result).to.deep.equal(id);
+    //                 })
+    //                 .catch((err: any) => {
+    //                     Log.error(err);
+    //                     expect.fail(err, id, "Should not be rejected");
+    //                 });
     //         })
     //         .catch((err: any) => {
     //             Log.error(err);
-    //             expect.fail("Should not reject");
+    //             expect.fail(err, [id], "Should not be rejected");
     //         });
     // });
-    // tests for listDatasets
-    // ______________________________________________________________________
-    it("Should list an empty array when no dataset is added", function () {
-        return insightFacade
-            .listDatasets()
-            .then((result: InsightDataset[]) => {
-                expect(result).to.have.lengthOf(0);
-                expect(result).to.include.members([]);
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, [], "Should not be rejected");
-            });
-    });
 
-    it("Should list all currently added datasets, their types, and number of rows", function () {
-        const id: string = "rooms";
-        const expected: InsightDataset[] = [
-            {
-                id: "rooms",
-                kind: InsightDatasetKind.Rooms,
-                numRows: 364,
-            },
-        ];
+    // it("Should throw InsightError given an invalid id with underscore when removing a dataset", function () {
+    //     const id: string = "cour_ses";
 
-        return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
-            .then(() => {
-                return insightFacade
-                    .listDatasets()
-                    .then((res: InsightDataset[]) => {
-                        expect(res).to.deep.equal(expected);
-                    })
-                    .catch((err: any) => {
-                        Log.error(err);
-                        expect.fail(err, expected, "Should not be rejected");
-                    });
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, [id], "Should not be rejected");
-            });
-    });
+    //     return insightFacade
+    //         .removeDataset(id)
+    //         .then((result: string) => {
+    //             expect.fail(result, id, "Should not fulfill");
+    //         })
+    //         .catch((err: any) => {
+    //             expect(err).to.be.instanceOf(InsightError);
+    //         });
+    // });
+
+    // it("Should throw InsightError given an invalid id with only whitespace when removing a dataset", function () {
+    //     const id: string = "     ";
+
+    //     return insightFacade
+    //         .removeDataset(id)
+    //         .then((result: string) => {
+    //             expect.fail(result, id, "Should not fulfill");
+    //         })
+    //         .catch((err: any) => {
+    //             expect(err).to.be.a.instanceOf(InsightError);
+    //         });
+    // });
+
+    // it("Should throw InsightError given a NULL id when removing a dataset", function () {
+    //     const id: string = null;
+
+    //     return insightFacade
+    //         .removeDataset(id)
+    //         .then((result: string) => {
+    //             expect.fail(result, "", "Should not fulfill");
+    //         })
+    //         .catch((err: any) => {
+    //             expect(err).to.be.a.instanceOf(InsightError);
+    //         });
+    // });
+
+    // it("Should throw InsightError given an undefined id when removing a dataset", function () {
+    //     const id: string = undefined;
+
+    //     return insightFacade
+    //         .removeDataset(id)
+    //         .then((result: string) => {
+    //             expect.fail(result, "", "Should not fulfill");
+    //         })
+    //         .catch((err: any) => {
+    //             expect(err).to.be.a.instanceOf(InsightError);
+    //         });
+    // });
+
+    // it("Should throw NotFoundError when removing a dataset that is not added given a valid id", function () {
+    //     const id: string = "courses";
+
+    //     return insightFacade
+    //         .removeDataset(id)
+    //         .then((result: string) => {
+    //             expect.fail(result, "", "Should not fulfill");
+    //         })
+    //         .catch((err: any) => {
+    //             expect(err).to.be.a.instanceOf(NotFoundError);
+    //         });
+    // });
+
+    // // it.only("Should be able to remove multiple valid datasets", function () {
+    // //     const id1: string = "courses";
+    // //     const id2: string = "courses2";
+
+    // //     insightFacade.addDataset(
+    // //         id1,
+    // //         datasets[id1],
+    // //         InsightDatasetKind.Courses,
+    // //     );
+    // //     insightFacade.addDataset(
+    // //         id2,
+    // //         datasets[id2],
+    // //         InsightDatasetKind.Courses,
+    // //     );
+
+    // //     return insightFacade.removeDataset(id1)
+    // //         .then((result: string) => {
+    // //             expect(result).to.deep.equal(id1);
+    // //         })
+    // //         .catch((err: any) => {
+    // //             Log.error(err);
+    // //             expect.fail("Should not reject");
+    // //         });
+    // // });
+    // // tests for listDatasets
+    // // ______________________________________________________________________
+    // it("Should list an empty array when no dataset is added", function () {
+    //     return insightFacade
+    //         .listDatasets()
+    //         .then((result: InsightDataset[]) => {
+    //             expect(result).to.have.lengthOf(0);
+    //             expect(result).to.include.members([]);
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, [], "Should not be rejected");
+    //         });
+    // });
+
+    // it("Should list all currently added datasets, their types, and number of rows", function () {
+    //     const id: string = "rooms";
+    //     const expected: InsightDataset[] = [
+    //         {
+    //             id: "rooms",
+    //             kind: InsightDatasetKind.Rooms,
+    //             numRows: 364,
+    //         },
+    //     ];
+
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
+    //         .then(() => {
+    //             return insightFacade
+    //                 .listDatasets()
+    //                 .then((res: InsightDataset[]) => {
+    //                     expect(res).to.deep.equal(expected);
+    //                 })
+    //                 .catch((err: any) => {
+    //                     Log.error(err);
+    //                     expect.fail(err, expected, "Should not be rejected");
+    //                 });
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, [id], "Should not be rejected");
+    //         });
+    // });
 });
 
 /*
