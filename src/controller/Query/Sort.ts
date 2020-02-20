@@ -6,7 +6,7 @@ export class Sort {
 
     // public keysInSort: string[];
 
-    public IDstrings: string[];
+    // public IDstrings: string[];
 
     public constructor(sortObj: any) {
         // this.keysInSort = [];

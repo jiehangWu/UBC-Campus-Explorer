@@ -11,6 +11,11 @@ export default class Transformation {
     public groupKeys: string[];
 
     public IDstrings: string[];
+    private allFields4Courses: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
+    "dept" , "id" , "instructor" , "title" , "uuid"];
+
+    private allFields4Rooms: string[] = ["lat" , "lon" , "seats" , "fullname" , "shortname" ,
+     "number" , "name" , "address" , "type" , "furniture" , "href" ];
 
 
     public constructor(transObj: any) {
@@ -48,6 +53,17 @@ export default class Transformation {
             throw new InsightError("GROUP must be a non-empty array");
         }
         this.groupKeys = this.groupKeys.concat(this.GROUP);
+        // added
+        this.GROUP.forEach((keyPair) => {
+        let idstring = keyPair.split("_", 2)[0];
+        let key = keyPair.split("_", 2)[1];
+        this.IDstrings.push(idstring);
+        if (idstring === "courses" && (! this.allFields4Courses.includes(key))) {
+            throw new InsightError("Invalid keys in group");
+        } else if (idstring === "rooms" && (! this.allFields4Rooms.includes(key))) {
+            throw new InsightError("Invalid keys in group");
+        }
+        });
     }
 
     private validateApply() {
@@ -68,7 +84,7 @@ export default class Transformation {
                 }
 
                 let applykey: string = Object.keys(APPLYRULE)[0];
-                if (applykey.includes("_")) {
+                if (applykey.includes("_") || applykey.length === 0) {
                     throw new InsightError("Applykey should not have underscore");
                 }
                 this.applyKeys.push(applykey);
