@@ -41,6 +41,10 @@ export class Sort {
             throw new InsightError("keys must not be an empty array");
         }
 
+        if (this.keys.length === 0) {
+            throw new InsightError("keys must not be an empty array");
+        }
+
         // no need to check if id of keys in sort are the same, cos columns already should have cover those
         // this.keys.forEach((key) => {
         //     if (applykey)
