@@ -103,7 +103,7 @@ export default class HtmlController {
                                     address: building.address,
                                     lat: result.lat,
                                     lon: result.lon,
-                                    seats: roomDetail.seats,
+                                    seats: Number(roomDetail.seats),
                                     type: roomDetail.type,
                                     furniture: roomDetail.furniture,
                                     href: roomDetail.href

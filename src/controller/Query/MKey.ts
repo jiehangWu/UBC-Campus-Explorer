@@ -27,7 +27,8 @@ export class MKey {
 
     public validateMField() {
         if (typeof this.value !== "number") {
-            throw new InsightError("wrong type in Mfield"); }
+            throw new InsightError("wrong type in Mfield");
+        }
 
         if (this.idString === "courses") {
             if (!this.mfieldsC.includes(this.field)) {

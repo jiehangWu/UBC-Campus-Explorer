@@ -11,6 +11,11 @@ export default class Transformation {
     public groupKeys: string[];
 
     public IDstrings: string[];
+    private allFields4Courses: string[] = ["avg" , "pass" , "fail" , "audit" , "year",
+    "dept" , "id" , "instructor" , "title" , "uuid"];
+
+    private allFields4Rooms: string[] = ["lat" , "lon" , "seats" , "fullname" , "shortname" ,
+     "number" , "name" , "address" , "type" , "furniture" , "href" ];
 
 
     public constructor(transObj: any) {
@@ -24,9 +29,15 @@ export default class Transformation {
             }
         });
 
-        if (! Object.keys(transObj).includes("GROUP") )    { throw new InsightError("missing GROUP"); }
-        if (! Object.keys(transObj).includes("APPLY") )   { throw new InsightError("missing APPLY"); }
-        if ( Object.keys(transObj).length !== 2 )        { throw new InsightError("Trans should have two keys"); }
+        if (! Object.keys(transObj).includes("GROUP") ) {
+            throw new InsightError("missing GROUP");
+        }
+        if (! Object.keys(transObj).includes("APPLY") ) {
+            throw new InsightError("missing APPLY");
+        }
+        if ( Object.keys(transObj).length !== 2 ) {
+            throw new InsightError("Trans should have two keys");
+        }
 
         this.GROUP = transObj["GROUP"];
         this.APPLY = transObj["APPLY"];
@@ -42,6 +53,18 @@ export default class Transformation {
             throw new InsightError("GROUP must be a non-empty array");
         }
         this.groupKeys = this.groupKeys.concat(this.GROUP);
+
+        this.GROUP.forEach((keyPair) => {
+        let idstring = keyPair.split("_", 2)[0];
+        let key = keyPair.split("_", 2)[1];
+        this.IDstrings.push(idstring);
+
+        if (idstring === "courses" && (! this.allFields4Courses.includes(key))) {
+            throw new InsightError("Invalid keys in group");
+        } else if (idstring === "rooms" && (! this.allFields4Rooms.includes(key))) {
+            throw new InsightError("Invalid keys in group");
+        }
+        });
     }
 
     private validateApply() {
@@ -62,7 +85,7 @@ export default class Transformation {
                 }
 
                 let applykey: string = Object.keys(APPLYRULE)[0];
-                if (applykey.includes("_")) {
+                if (applykey.includes("_") || applykey.length === 0) {
                     throw new InsightError("Applykey should not have underscore");
                 }
                 this.applyKeys.push(applykey);
@@ -89,15 +112,17 @@ export default class Transformation {
                 this.IDstrings.push(idstring);
 
             });
+            if ((new Set(this.applyKeys)).size !== this.applyKeys.length) {
+                throw new InsightError("Duplicate keys in applykeys");
+            }
+
         }
     }
-    // keys in apply and gorup should cover all that in columns
 
     // return dataset result
     public processTransformation(dataObjArrary: any): any {
         let intermediate = this.performGroup(dataObjArrary);
         return this.performApply(intermediate);
-        // finally return an object start with {[id+key]:map.key * group#  and other apply rule }
     }
 
 
@@ -124,9 +149,6 @@ export default class Transformation {
         this.APPLY.forEach((rule: Applyrule) => {
             rule = new Applyrule(rule);
             rule.runRule(intermediate);
-            intermediate.forEach((singleObj: any) => {
-                delete singleObj["data"];
-            });
         });
         return intermediate;
     }

@@ -18,7 +18,9 @@ export default class Query {
     private hasTrans?: boolean;
 
     public constructor(query: any) {
-        if (!query)                                  { throw new InsightError("Query empty or null"); }
+        if (!query) {
+             throw new InsightError("Query empty or null");
+        }
         this.keyset = Object.keys(query);
         this.checkQueryStructure(query);
         this.IDstrings = [];
@@ -30,10 +32,19 @@ export default class Query {
                 throw new InsightError("Excess/ Wrong key in query");
             }
         });
-        if (this.keyset.length > 3)                { throw new InsightError("excess key"); }
-        if (!this.keyset.includes("WHERE"))          { throw new InsightError("missing WHERE"); }
-        if (typeof query.WHERE !== "object")         { throw new InsightError("WHERE not an obj"); }
-        if (Object.keys(query.WHERE).length > 1)     { throw new InsightError("WHERE should at most have 1 key"); }
+        if (this.keyset.length > 3) {
+            throw new InsightError("excess key");
+        }
+        if (!this.keyset.includes("WHERE")) {
+            throw new InsightError("missing WHERE");
+        }
+        if (typeof query.WHERE !== "object") {
+            throw new InsightError("WHERE not an obj");
+        }
+        if (Object.keys(query.WHERE).length > 1) {
+            throw new InsightError("WHERE should at most have 1 key");
+        }
+
         if (Object.keys(query.WHERE).length === 0) {
             this.emptyWhere = true;
         } else {
@@ -41,12 +52,16 @@ export default class Query {
             this.WHERE = new Filter(query);
         }
 
-        if (!this.keyset.includes("OPTIONS"))        { throw new InsightError("missing OPTIONS"); }
+        if (!this.keyset.includes("OPTIONS")) {
+            throw new InsightError("missing OPTIONS");
+        }
         this.OPTIONS = new Options(query);
 
         if (this.keyset.includes("TRANSFORMATIONS")) {
             this.hasTrans = true;
-            if (!query["TRANSFORMATIONS"])       { throw new InsightError("TRANS empty or null"); }
+            if (!query["TRANSFORMATIONS"]) {
+                throw new InsightError("TRANS empty or null");
+            }
             this.TRANSFORMATION = new Transformation(query["TRANSFORMATIONS"]);
         } else {
             this.hasTrans = false;

@@ -4,17 +4,16 @@ export class Sort {
     public dir: string;
     public keys: string[];
 
-    // public keysInSort: string[];
-
-    public IDstrings: string[];
-
     public constructor(sortObj: any) {
-        // this.keysInSort = [];
-
-        if (! Object.keys(sortObj).includes("dir") )    { throw new InsightError("missing dir"); }
-        if (! Object.keys(sortObj).includes("keys") )   { throw new InsightError("missing keys"); }
-        if ( Object.keys(sortObj).length !== 2 )        { throw new InsightError("excess key in sort"); }
-        //  2 if blocks below to check if wrong key in options
+        if (! Object.keys(sortObj).includes("dir") ) {
+            throw new InsightError("missing dir");
+        }
+        if (! Object.keys(sortObj).includes("keys") ) {
+            throw new InsightError("missing keys");
+        }
+        if ( Object.keys(sortObj).length !== 2 ) {
+            throw new InsightError("excess key in sort");
+        }
         Object.keys(sortObj).forEach((key) => {
             if (! (key === "dir" || key === "keys")) {
                 throw new InsightError("Wrong key in ORDERS");
@@ -32,19 +31,13 @@ export class Sort {
 
     private validateKeys() {
         if (! Array.isArray(this.keys)) {
-            throw new InsightError("keys must not be an empty array");
+            throw new InsightError("keys must be an array");
         }
 
-        // no need to check if id of keys in sort are the same, cos columns already should have cover those
-        // this.keys.forEach((key) => {
-        //     if (applykey)
-        //     let idstring = key.split("_", 2)[0];
-        //     this.IDstrings.push(idstring);
-        // });
-        //  so if there is transformation, this would be under if transformation block
-
-        // transformation or not: as a boolean or two methods?
-        // have check if keys is applykey? if yes ???
+        if (this.keys.length === 0) {
+            throw new InsightError("keys must not be an unempty array");
+        }
+        // no need to check id & fields in sort, since they match up columns
     }
 
     private validateDir() {
@@ -52,5 +45,4 @@ export class Sort {
             throw new InsightError("Wrong direction key");
         }
     }
-
 }
