@@ -26,7 +26,7 @@ export default class Router {
         })
         .catch((err: any) => {
             Log.error("Router::put(..) - responding 400");
-            res.json(400, {error: err});
+            res.json(400, {error: err.toString()});
             next();
         });
     }
@@ -42,14 +42,15 @@ export default class Router {
             res.json(200, {result: response});
             next();
         })
-        .catch((err: InsightError) => {
-            Log.error("Router::delete(..) - responding 400");
-            res.json(400, {error: err});
-            next();
-        })
-        .catch((err: NotFoundError) => {
-            Log.error("Router::delete(..) - responding 404");
-            res.json(404, {error: err});
+        .catch((err: any) => {
+            if (err instanceof InsightError) {
+                Log.error("Router::delete(..) - responding 400");
+                res.json(400, {error: err.toString()});
+            } else if (err instanceof NotFoundError) {
+                Log.error("Router::delete(..) - responding 404");
+                res.json(404, {error: err.toString()});
+            }
+
             next();
         });
     }
@@ -66,7 +67,7 @@ export default class Router {
         })
         .catch((err: any) => {
             Log.error("Router::delete(..) - responding 400");
-            res.json(400, {error: err});
+            res.json(400, {error: err.toString()});
             next();
         });
     }
