@@ -15,19 +15,19 @@ export default class Router {
 
         const id: string = req.params.id;
         const kind: InsightDatasetKind = req.params.kind;
-        let content: Buffer = new Buffer(req.body);
+        let content: Buffer = Buffer.from(req.body);
         let base64Content: string = content.toString("base64");
 
         this.insightFacade.addDataset(id, base64Content, kind)
         .then((response: string[]) => {
             Log.info("Router::put(..) - responding " + 200);
             res.json(200, {result: response});
-            next();
+            return next();
         })
         .catch((err: any) => {
             Log.error("Router::put(..) - responding 400");
             res.json(400, {error: err.toString()});
-            next();
+            return next();
         });
     }
 
@@ -40,7 +40,7 @@ export default class Router {
         .then((response: string) => {
             Log.info("Router::delete(..) - responding " + 200);
             res.json(200, {result: response});
-            next();
+            return next();
         })
         .catch((err: any) => {
             if (err instanceof InsightError) {
@@ -51,7 +51,7 @@ export default class Router {
                 res.json(404, {error: err.toString()});
             }
 
-            next();
+            return next();
         });
     }
 
@@ -63,12 +63,12 @@ export default class Router {
         .then((response: any[]) => {
             Log.info("Router::post(..) - responding " + 200);
             res.json(200, {result: response});
-            next();
+            return next();
         })
         .catch((err: any) => {
             Log.error("Router::delete(..) - responding 400");
             res.json(400, {error: err.toString()});
-            next();
+            return next();
         });
     }
 
@@ -79,11 +79,11 @@ export default class Router {
         .then((response: InsightDataset[]) => {
             Log.info("Router::post(..) - responding " + 200);
             res.json(200, {result: response});
-            next();
+            return next();
         })
         .catch((err: any) => {
             Log.error("Router::getList(..) - Should never reject");
-            next();
+            return next();
         });
     }
 }
