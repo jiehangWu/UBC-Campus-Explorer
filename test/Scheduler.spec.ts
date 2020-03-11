@@ -64,27 +64,6 @@ describe("Scheduler", function () {
 
     //     let rooms = [
     //         {
-    //             rooms_shortname: "AERL",
-    //             rooms_number: "120",
-    //             rooms_seats: 144,
-    //             rooms_lat: 49.26372,
-    //             rooms_lon: -123.25099
-    //         },
-    //         {
-    //             rooms_shortname: "ALRD",
-    //             rooms_number: "105",
-    //             rooms_seats: 94,
-    //             rooms_lat: 49.2699,
-    //             rooms_lon: -123.25318
-    //         },
-    //         {
-    //             rooms_shortname: "ANGU",
-    //             rooms_number: "098",
-    //             rooms_seats: 260,
-    //             rooms_lat: 49.26486,
-    //             rooms_lon: -123.25364
-    //         },
-    //         {
     //             rooms_shortname: "BUCH",
     //             rooms_number: "A101",
     //             rooms_seats: 275,
@@ -96,5 +75,4 @@ describe("Scheduler", function () {
     //     let output = scheduler.schedule(sections, rooms);
 
     // });
-
 });

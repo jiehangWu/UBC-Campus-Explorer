@@ -30,7 +30,7 @@ export default class Scheduler implements IScheduler {
             }
 
             let processedSection = this.processTimeSlot(section, resultRoom);
-            if (processedSection !== null || processedSection !== undefined) {
+            if (processedSection !== null && processedSection !== undefined) {
                 output.push(processedSection);
             }
         }
@@ -38,6 +38,12 @@ export default class Scheduler implements IScheduler {
         return output;
     }
 
+    /**
+     *
+     * @param section
+     * @param room
+     * @return The processed result if processable, otherwise return null
+     */
     private processTimeSlot(section: SchedSection, room: SchedRoom): [SchedRoom, SchedSection, TimeSlot] {
         const timeSlots: TimeSlot[] = ["MWF 0800-0900", "MWF 0900-1000", "MWF 1000-1100",
             "MWF 1100-1200", "MWF 1200-1300", "MWF 1300-1400",
@@ -56,10 +62,23 @@ export default class Scheduler implements IScheduler {
         return result;
     }
 
+    /**
+     *
+     * @param section
+     * @param room
+     * @param timeSlot
+     * @return Return true if the room is available and section has no overlap, false otherwise
+     */
     private canProcessTimeSlot(section: SchedSection, room: SchedRoom, timeSlot: TimeSlot): boolean {
         return this.checkRoomAvailablity(room, timeSlot) && this.checkSectionOverlap(section, timeSlot);
     }
 
+    /**
+     *
+     * @param section
+     * @param timeSlot
+     * @return True if the section has no overlap, false otherwise
+     */
     private checkSectionOverlap(section: SchedSection, timeSlot: TimeSlot): boolean {
         const course: Course = { courses_dept: section.courses_dept, courses_id: section.courses_id };
 
