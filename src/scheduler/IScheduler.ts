@@ -25,11 +25,6 @@ export interface SchedRoom {
     rooms_href?: string;
 }
 
-export interface Course {
-    courses_dept: string;
-    courses_id: string;
-}
-
 export type TimeSlot =
     "MWF 0800-0900" | "MWF 0900-1000" | "MWF 1000-1100" |
     "MWF 1100-1200" | "MWF 1200-1300" | "MWF 1300-1400" |

@@ -1,8 +1,8 @@
-import { IScheduler, SchedRoom, SchedSection, TimeSlot, Course } from "./IScheduler";
+import { IScheduler, SchedRoom, SchedSection, TimeSlot } from "./IScheduler";
 
 export default class Scheduler implements IScheduler {
     private roomToTimeSlot: Map<SchedRoom, TimeSlot[]>;
-    private courseToTimeSlot: Map<Course, TimeSlot[]>;
+    private courseToTimeSlot: Map<string, TimeSlot[]>;
 
     constructor() {
         this.roomToTimeSlot = new Map();
@@ -70,7 +70,7 @@ export default class Scheduler implements IScheduler {
      * @return Return true if the room is available and section has no overlap, false otherwise
      */
     private canProcessTimeSlot(section: SchedSection, room: SchedRoom, timeSlot: TimeSlot): boolean {
-        return this.checkRoomAvailablity(room, timeSlot) && this.checkSectionOverlap(section, timeSlot);
+        return (this.checkRoomAvailablity(room, timeSlot) && this.checkSectionOverlap(section, timeSlot));
     }
 
     /**
@@ -80,7 +80,7 @@ export default class Scheduler implements IScheduler {
      * @return True if the section has no overlap, false otherwise
      */
     private checkSectionOverlap(section: SchedSection, timeSlot: TimeSlot): boolean {
-        const course: Course = { courses_dept: section.courses_dept, courses_id: section.courses_id };
+        const course: string = section.courses_dept.concat(section.courses_id);
 
         if (!this.courseToTimeSlot.has(course)) {
             this.courseToTimeSlot.set(course, [timeSlot]);
