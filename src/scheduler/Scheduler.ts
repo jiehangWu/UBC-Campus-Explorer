@@ -1,7 +1,7 @@
 import { IScheduler, SchedRoom, SchedSection, TimeSlot } from "./IScheduler";
 
 export default class Scheduler implements IScheduler {
-    private roomToTimeSlot: Map<SchedRoom, TimeSlot[]>;
+    private roomToTimeSlot: Map<string, TimeSlot[]>;
     private courseToTimeSlot: Map<string, TimeSlot[]>;
 
     constructor() {
@@ -78,7 +78,9 @@ export default class Scheduler implements IScheduler {
     }
 
 
-    private addTimeSlotToRoomMap(room: SchedRoom, timeSlot: TimeSlot) {
+    private addTimeSlotToRoomMap(schedRoom: SchedRoom, timeSlot: TimeSlot) {
+        let room: string = schedRoom.rooms_shortname + schedRoom.rooms_number;
+
         if (!this.roomToTimeSlot.has(room)) {
             this.roomToTimeSlot.set(room, [timeSlot]);
         } else {
@@ -132,7 +134,9 @@ export default class Scheduler implements IScheduler {
      * @param timeSlot
      * @return True if the room is available at given time, false otherwise.
      */
-    private checkRoomAvailablity(room: SchedRoom, timeSlot: TimeSlot): boolean {
+    private checkRoomAvailablity(schedRoom: SchedRoom, timeSlot: TimeSlot): boolean {
+        let room: string = schedRoom.rooms_shortname + schedRoom.rooms_number;
+
         if (!this.roomToTimeSlot.has(room)) {
             return true;
         }
