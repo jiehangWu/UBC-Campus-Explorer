@@ -67,7 +67,7 @@ export default class Scheduler implements IScheduler {
         let result: any;
         for (let timeSlot of timeSlots) {
             if (this.canProcessTimeSlot(section, room, timeSlot)) {
-                result = [room, section, timeSlot]
+                result = [room, section, timeSlot];
                 this.addTimeSlotToCourseMap(section, timeSlot);
                 this.addTimeSlotToRoomMap(room, timeSlot);
                 break;
