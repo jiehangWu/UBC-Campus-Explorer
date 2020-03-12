@@ -176,7 +176,7 @@ export default class Scheduler implements IScheduler {
             }
         }
 
-        if (start >= rooms.length) {
+        if (rooms[start].rooms_seats < enrolment) {
             result = null;
         } else {
             result = rooms[start];
