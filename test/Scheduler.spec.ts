@@ -97,8 +97,22 @@ describe("Scheduler", function () {
     //         },
     //         {
     //             "rooms_shortname": "ALRD",
-    //             "rooms_number": "105",
+    //             "rooms_number": "104",
     //             "rooms_seats": 94,
+    //             "rooms_lat": 49.2699,
+    //             "rooms_lon": -123.2531,
+    //         },
+    //         {
+    //             "rooms_shortname": "ALRD",
+    //             "rooms_number": "105",
+    //             "rooms_seats": 95,
+    //             "rooms_lat": 49.2699,
+    //             "rooms_lon": -123.2531,
+    //         },
+    //         {
+    //             "rooms_shortname": "ALRD",
+    //             "rooms_number": "106",
+    //             "rooms_seats": 96,
     //             "rooms_lat": 49.2699,
     //             "rooms_lon": -123.2531,
     //         },

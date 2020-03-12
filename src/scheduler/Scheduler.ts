@@ -35,7 +35,14 @@ export default class Scheduler implements IScheduler {
             }
         });
 
+        let allotedSections: Set<string> = new Set();
+
         for (let section of sections) {
+            let sectionString: string = section.courses_dept + section.courses_id + section.courses_uuid;
+            if (allotedSections.has(sectionString)) {
+                continue;
+            }
+
             let resultRoom: SchedRoom = this.searchRoom(section, rooms);
 
             if (resultRoom === null) {
@@ -45,6 +52,7 @@ export default class Scheduler implements IScheduler {
             let processedSection = this.processTimeSlot(section, resultRoom);
             if (processedSection !== null && processedSection !== undefined) {
                 output.push(processedSection);
+                allotedSections.add(sectionString);
             }
         }
 
@@ -157,14 +165,14 @@ export default class Scheduler implements IScheduler {
         let start: number = 0;
         let end: number = rooms.length - 1;
 
-        while (start <= end) {
+        while (start < end) {
             let mid: number = start + Math.floor((end - start) / 2);
             let roomSize: number = rooms[mid].rooms_seats;
 
             if (enrolment > roomSize) {
                 start = mid + 1;
             } else {
-                end = mid - 1;
+                end = mid;
             }
         }
 
