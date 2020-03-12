@@ -55,8 +55,6 @@ export class DatasetController {
     // to be refactored
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<any> {
         return new Promise((resolve, reject) => {
-
-
             new JSZip().loadAsync(content, { base64: true })
                 .then((zip: JSZip) => {
                     if (zip.folder(kind).length === 0) {
@@ -78,7 +76,6 @@ export class DatasetController {
                                 resolve();
                             });
                     }
-
                 })
                 .catch((err: any) => {
                     reject(new InsightError("Can not loadAsync"));

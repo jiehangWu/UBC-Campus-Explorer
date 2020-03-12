@@ -5,7 +5,7 @@
 import fs = require("fs");
 import restify = require("restify");
 import Log from "../Util";
-
+import Router from "../rest/Router";
 /**
  * This configures the REST endpoints for the server.
  */
@@ -13,10 +13,12 @@ export default class Server {
 
     private port: number;
     private rest: restify.Server;
+    private router: Router;
 
     constructor(port: number) {
         Log.info("Server::<init>( " + port + " )");
         this.port = port;
+        this.router = new Router();
     }
 
     /**
@@ -64,7 +66,10 @@ export default class Server {
                 that.rest.get("/echo/:msg", Server.echo);
 
                 // NOTE: your endpoints should go here
-
+                that.rest.put("/dataset/:id/:kind", (req, res, next) => that.router.put(req, res, next));
+                that.rest.del("/dataset/:id", (req, res, next) => that.router.delete(req, res, next));
+                that.rest.post("/query", (req, res, next) => that.router.post(req, res, next));
+                that.rest.get("/datasets", (req, res, next) => that.router.getList(req, res, next));
                 // This must be the last endpoint!
                 that.rest.get("/.*", Server.getStatic);
 
@@ -129,5 +134,4 @@ export default class Server {
             return next();
         });
     }
-
 }

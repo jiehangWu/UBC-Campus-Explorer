@@ -1,14 +1,12 @@
 import Log from "../Util";
 import { IInsightFacade,
     InsightDataset,
-    InsightDatasetKind,
-    NotFoundError,
-    ResultTooLargeError } from "./IInsightFacade";
+    InsightDatasetKind } from "./IInsightFacade";
 import { InsightError } from "./IInsightFacade";
 import { DatasetController } from "./DatasetController";
 import Query from "./Query/Query";
 import * as fs from "fs-extra";
-import { stringify } from "querystring";
+
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -16,7 +14,7 @@ import { stringify } from "querystring";
  */
 
 export default class InsightFacade implements IInsightFacade {
-    public datasetController: DatasetController;
+    private datasetController: DatasetController;
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
