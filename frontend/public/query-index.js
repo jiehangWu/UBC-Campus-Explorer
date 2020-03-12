@@ -18,7 +18,7 @@ submitButton.onclick = () => {
         CampusExplorer.renderResult(result);
     })
     .catch((err) => {
-        // not sure what to do here yet
+        CampusExplorer.renderResult(err);
     });
 };
 
