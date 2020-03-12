@@ -12,6 +12,19 @@ export default class Scheduler implements IScheduler {
     public schedule(sections: SchedSection[], rooms: SchedRoom[]): Array<[SchedRoom, SchedSection, TimeSlot]> {
         let output: Array<[SchedRoom, SchedSection, TimeSlot]> = [];
 
+        sections.sort((a: SchedSection, b: SchedSection) => {
+            const aSize: number = a.courses_pass + a.courses_fail + a.courses_audit;
+            const bSize: number = b.courses_pass + b.courses_fail + b.courses_audit;
+
+            if (aSize > bSize) {
+                return -1;
+            } else if (aSize < bSize) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
         rooms.sort((a: SchedRoom, b: SchedRoom) => {
             if (a.rooms_seats > b.rooms_seats) {
                 return 1;
@@ -54,12 +67,35 @@ export default class Scheduler implements IScheduler {
         let result: any;
         for (let timeSlot of timeSlots) {
             if (this.canProcessTimeSlot(section, room, timeSlot)) {
-                result = [room, section, timeSlot];
+                result = [room, section, timeSlot]
+                this.addTimeSlotToCourseMap(section, timeSlot);
+                this.addTimeSlotToRoomMap(room, timeSlot);
                 break;
             }
         }
 
         return result;
+    }
+
+
+    private addTimeSlotToRoomMap(room: SchedRoom, timeSlot: TimeSlot) {
+        if (!this.roomToTimeSlot.has(room)) {
+            this.roomToTimeSlot.set(room, [timeSlot]);
+        } else {
+            let timeSlots: TimeSlot[] = this.roomToTimeSlot.get(room);
+            timeSlots.push(timeSlot);
+        }
+    }
+
+    private addTimeSlotToCourseMap(section: SchedSection, timeSlot: TimeSlot) {
+        const course: string = section.courses_dept.concat(section.courses_id);
+
+        if (!this.courseToTimeSlot.has(course)) {
+            this.courseToTimeSlot.set(course, [timeSlot]);
+        } else {
+            let timeSlots: TimeSlot[] = this.courseToTimeSlot.get(course);
+            timeSlots.push(timeSlot);
+        }
     }
 
     /**
@@ -83,17 +119,11 @@ export default class Scheduler implements IScheduler {
         const course: string = section.courses_dept.concat(section.courses_id);
 
         if (!this.courseToTimeSlot.has(course)) {
-            this.courseToTimeSlot.set(course, [timeSlot]);
             return true;
         }
 
         let timeSlots: TimeSlot[] = this.courseToTimeSlot.get(course);
-        if (timeSlots.includes(timeSlot)) {
-            return false;
-        } else {
-            timeSlots.push(timeSlot);
-            return true;
-        }
+        return !timeSlots.includes(timeSlot);
     }
 
     /**
@@ -104,17 +134,11 @@ export default class Scheduler implements IScheduler {
      */
     private checkRoomAvailablity(room: SchedRoom, timeSlot: TimeSlot): boolean {
         if (!this.roomToTimeSlot.has(room)) {
-            this.roomToTimeSlot.set(room, [timeSlot]);
             return true;
         }
 
         let timeSlots: TimeSlot[] = this.roomToTimeSlot.get(room);
-        if (timeSlots.includes(timeSlot)) {
-            return false;
-        } else {
-            timeSlots.push(timeSlot);
-            return true;
-        }
+        return !timeSlots.includes(timeSlot);
     }
 
     /**

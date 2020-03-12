@@ -1,5 +1,6 @@
 import Log from "../src/Util";
 import Scheduler from "../src/scheduler/Scheduler";
+import { expect } from "chai";
 
 describe("Scheduler", function () {
     let scheduler: Scheduler;
@@ -94,6 +95,7 @@ describe("Scheduler", function () {
     //     ];
 
     //     let output = scheduler.schedule(sections, rooms);
-
+    //     console.log(output);
+    //     expect(output).to.deep.equal([]);
     // });
 });
