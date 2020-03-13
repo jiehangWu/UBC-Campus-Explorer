@@ -1,14 +1,21 @@
 import Log from "../src/Util";
 import Scheduler from "../src/scheduler/Scheduler";
 import { expect } from "chai";
+import * as fs from "fs-extra";
+import InsightFacade from "../src/controller/InsightFacade";
+import { InsightDatasetKind } from "../src/controller/IInsightFacade";
 
 describe("Scheduler", function () {
     let scheduler: Scheduler;
+    let insightFacade: InsightFacade;
 
     before(function () {
         // This section runs once and loads all datasets specified in the datasetsToLoad object
         // into the datasets object
         Log.test(`Before all`);
+        let course: string = fs.readFileSync("../data/courses/courses.json").toString("base64");
+        insightFacade = new InsightFacade();
+        insightFacade.addDataset("courses", course, InsightDatasetKind.Courses);
     });
 
 

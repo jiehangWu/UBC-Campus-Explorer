@@ -13,29 +13,6 @@ export class DatasetController {
 
     public constructor() {
         this.datasets = new Map();
-        let courseFolder: string = "./data/courses";
-        let roomFolder: string = "./data/rooms";
-
-        if (fs.existsSync(courseFolder)) {
-            fs.readdirSync(courseFolder).forEach((fileName: string) => {
-                this.datasets.set(fileName, {
-                    id: fileName,
-                    kind: InsightDatasetKind.Courses,
-                    numRows: fs.readFileSync(courseFolder + "/" + fileName).length
-                });
-            });
-        }
-
-        if (fs.existsSync(roomFolder)) {
-            fs.readdirSync(roomFolder).forEach((fileName: string) => {
-                this.datasets.set(fileName, {
-                    id: fileName,
-                    kind: InsightDatasetKind.Rooms,
-                    numRows: fs.readFileSync(roomFolder + "/" + fileName).length
-                });
-            });
-        }
-
         this.htmlController = new HtmlController();
     }
 
