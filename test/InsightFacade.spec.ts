@@ -8,7 +8,6 @@ import {
 } from "../src/controller/IInsightFacade";
 import InsightFacade from "../src/controller/InsightFacade";
 import Log from "../src/Util";
-import TestUtil from "./TestUtil";
 
 // This should match the schema given to TestUtil.validate(..) in TestUtil.readTestQueries(..)
 // except 'filename' which is injected when the file is read.
@@ -70,44 +69,59 @@ describe("InsightFacade Add/Remove Dataset", function () {
         Log.test(`AfterTest: ${this.currentTest.title}`);
     });
 
-    // This is a unit test. You should create more like this!
-    it("Should add a valid dataset", function () {
-        const id: string = "courses";
-        const expected: string[] = [id];
+    // // This is a unit test. You should create more like this!
+    // it("Should add a valid dataset", function () {
+    //     const id: string = "courses";
+    //     const expected: string[] = [id];
 
-        return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Courses)
-            .then((result: string[]) => {
-                expect(result).to.deep.equal(expected);
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, expected, "Should not have rejected");
-            });
-    });
-
-    it("Should add a valid room dataset", function () {
-        const id: string = "rooms";
-        const expected: string[] = [id];
-
-        return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
-            .then((result: string[]) => {
-                expect(result).to.deep.equal(expected);
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, expected, "Should not have rejected");
-            });
-    });
-
-    // it.only("Should add multiple dataset", function () {
-    //     const id1: string = "courses";
-    //     const id2: string = "courses2";
-
-    //     insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses);
-    //     insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses);
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Courses)
+    //         .then((result: string[]) => {
+    //             expect(result).to.deep.equal(expected);
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, expected, "Should not have rejected");
+    //         });
     // });
+
+    // it("Should add a valid dataset", function () {
+    //     const id: string = "courses";
+    //     const expected: string[] = [id];
+
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Courses)
+    //         .then((result: string[]) => {
+    //             expect(result).to.deep.equal(expected);
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, expected, "Should not have rejected");
+    //         });
+    // });
+
+    // it("Should add a valid room dataset", function () {
+    //     const id: string = "rooms";
+    //     const expected: string[] = [id];
+
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
+    //         .then((result: string[]) => {
+    //             expect(result).to.deep.equal(expected);
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, expected, "Should not have rejected");
+    //         });
+    // });
+
+    // // it.only("Should add multiple dataset", function () {
+    // //     const id1: string = "courses";
+    // //     const id2: string = "courses2";
+
+    // //     insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses);
+    // //     insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses);
+    // // });
 
     // it("Should throw InsightError when adding a dataset to a existing id", function () {
     //     const id: string = "courses";
