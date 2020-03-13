@@ -66,7 +66,7 @@ export default class Router {
             return next();
         })
         .catch((err: any) => {
-            Log.error("Router::delete(..) - responding 400");
+            Log.error("Router::post(..) - responding 400");
             res.json(400, {error: err.toString()});
             return next();
         });
@@ -77,7 +77,7 @@ export default class Router {
 
         this.insightFacade.listDatasets()
         .then((response: InsightDataset[]) => {
-            Log.info("Router::post(..) - responding " + 200);
+            Log.info("Router::getList(..) - responding " + 200);
             res.json(200, {result: response});
             return next();
         })
