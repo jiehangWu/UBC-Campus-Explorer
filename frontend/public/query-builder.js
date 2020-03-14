@@ -122,10 +122,10 @@ function buildOptions(query, tabPanel, datasetKind) {
     let checkedColumns = controlGroup.filter((column) => (column.children)[0].checked);
     let columns = checkedColumns.map(function (singleCol) {
         let ret;
-        if (singleCol.className === "control transforamtion") {
-            ret = singleCol.children[0].value;
-        } else if (singleCol.className === "control field") {
+        if (singleCol.className === "control field") {
             ret = (datasetKind + "_").concat(singleCol.children[0].value);
+        } else if (singleCol.className === "control transformation") {
+            ret = singleCol.children[0].value;
         }
         return ret;
     });
@@ -139,9 +139,9 @@ function buildOptions(query, tabPanel, datasetKind) {
     let queriedOrderFields = orderFields.filter((order) => order.selected);
     let queriedOrderKey = queriedOrderFields.map(function (orderField) {
         let ret;
-        if (! orderField.className === "transformation") {
+        if (orderField.className === "transformation") {
             ret = orderField.value;
-        } else {
+        } else if (orderField.className !== "transformation"){
             ret = (datasetKind + "_") .concat(orderField.value);
         }
         return ret;
@@ -190,7 +190,6 @@ function buildTransformations(query, tabPanel, datasetKind) {
     controlGroup_trans.forEach(function (singleTrans) {
         let controlTerm = singleTrans.getElementsByClassName("control term")[0];
         let applyKey = controlTerm.getElementsByTagName("input")[0].value;
-
         let applyTokens = ["COUNT", "AVG", "MAX", "MIN", "SUM"];
         let controlOperator = Array.from(singleTrans.getElementsByClassName("control operators")[0].children);
         let TokenIndex = controlOperator[0].selectedIndex;

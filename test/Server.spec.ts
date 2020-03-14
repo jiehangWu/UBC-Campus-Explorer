@@ -23,7 +23,7 @@ describe("Facade D3", function () {
 
     after(function () {
         // TODO: stop server here once!
-        server.stop();
+        // server.stop();
     });
 
     beforeEach(function () {
