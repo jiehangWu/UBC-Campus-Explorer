@@ -203,8 +203,8 @@ function buildTransformations(query, tabPanel, datasetKind) {
         // });
         let applyToken = applyTokens[TokenIndex];
 
-        let coursesFields = ["avg","pass","fail","audit","year","dept","id","instructor","title","uuid"];
-        let roomsFields = ["lat","lon","seats","fullname","shortname","number","name","address","type","furniture","href"];
+        let coursesFields = ["audit","avg","dept","fail","id","instructor","pass","title","uuid","year"];
+        let roomsFields = ["address","fullname","furniture","href","lat","lon","name","number","seats","shortname","type"];
         let controlFields_trans = Array.from(singleTrans.getElementsByClassName("control fields")[0].children);
         let FieldIndex = controlFields_trans[0].selectedIndex;
         // let queriedOptionField = controlFields_trans.filter((optionField) => optionField.selected);
