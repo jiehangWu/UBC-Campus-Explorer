@@ -71,35 +71,35 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     // This is a unit test. You should create more like this!
-    it("Should add a valid dataset", function () {
-        const id: string = "courses";
-        const expected: string[] = [id];
+    // it("Should add a valid dataset", function () {
+    //     const id: string = "courses";
+    //     const expected: string[] = [id];
 
-        return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Courses)
-            .then((result: string[]) => {
-                expect(result).to.deep.equal(expected);
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, expected, "Should not have rejected");
-            });
-    });
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Courses)
+    //         .then((result: string[]) => {
+    //             expect(result).to.deep.equal(expected);
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, expected, "Should not have rejected");
+    //         });
+    // });
 
-    it("Should add a valid room dataset", function () {
-        const id: string = "rooms";
-        const expected: string[] = [id];
+    // it("Should add a valid room dataset", function () {
+    //     const id: string = "rooms";
+    //     const expected: string[] = [id];
 
-        return insightFacade
-            .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
-            .then((result: string[]) => {
-                expect(result).to.deep.equal(expected);
-            })
-            .catch((err: any) => {
-                Log.error(err);
-                expect.fail(err, expected, "Should not have rejected");
-            });
-    });
+    //     return insightFacade
+    //         .addDataset(id, datasets[id], InsightDatasetKind.Rooms)
+    //         .then((result: string[]) => {
+    //             expect(result).to.deep.equal(expected);
+    //         })
+    //         .catch((err: any) => {
+    //             Log.error(err);
+    //             expect.fail(err, expected, "Should not have rejected");
+    //         });
+    // });
 
     // it.only("Should add multiple dataset", function () {
     //     const id1: string = "courses";

@@ -60,7 +60,6 @@ export class Options {
     }
 
     private checkOptionKeySet() {
-        //  2 if blocks below to check if wrong key in options
         Object.keys(this.optionBlock).forEach((key) => {
             if (! (key === "COLUMNS" || key === "ORDER" || key === "TRANSFORMATIONS")) {
                 throw new InsightError("Excess Key");
@@ -89,33 +88,23 @@ export class Options {
         //  two cases: order = string | obj wiz dir and keys as an arrary
         if (typeof this.ORDER === "string") {
             this.orderField = this.ORDER.split("_", 2)[1];
-            // if (! this.allFields.includes(this.orderField)) {
-            //     throw new InsightError("invalid order type for courses");
-            // }
-
-            // let OrderId = this.ORDER.split("_", 2)[0];
-
-            // this.IDstrings.push(OrderId);
 
             if (! this.Columns.includes(this.ORDER)) {
                 throw new InsightError("Order field not in column");
             }
-            // realte to the situation that difference in checking idstrings
+
         } else if (typeof this.ORDER === "object") {
             let sort: Sort = new Sort(this.ORDER);
             sort.validate();
 
             // check if in columns
             let orderInColumn = true;
-
             sort.keys.forEach((key: any) => {
                 orderInColumn = orderInColumn && (this.Columns.includes(key));
                 });
             if (! orderInColumn) {
                 throw new InsightError("Sort order not in Columns");
             }
-
-            // this.IDstrings.concat(sort.IDstrings);
         }
     }
 
@@ -157,8 +146,6 @@ export class Options {
             }
         });
     }
-    //  checking the validity of keys in columns and giving back the result to validate columns, has to separate because
-    //  of line issue
 
     //  check if columns is covered by all when there is transformation
     public validateTransColumnCoverage(groupArray: string[], applyArray: string[]) {

@@ -15,6 +15,7 @@ export class App {
             Log.error("App::initServer() - ERROR: " + err.message);
         });
     }
+
 }
 
 // This ends up starting the whole system and listens on a hardcoded port (4321)

@@ -40,7 +40,6 @@ export class Applyrule {
                     throw new InsightError("Wrong key type coursess_xxx in ApplyRule");
                 }
             }
-        // no need to check id string here
         }
     }
 

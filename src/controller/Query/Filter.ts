@@ -2,8 +2,6 @@ import { MKey } from "./MKey";
 import { InsightError } from "../IInsightFacade";
 import { SKey } from "./SKey";
 
-// deal with * inputString; todo
-
 export class Filter {
     public AND: Filter[];
     public OR: Filter[];
@@ -43,7 +41,6 @@ export class Filter {
         }
     }
 
-    // for loop + recursive
     private validateLogicalComparators() {
         if (this.comparator === "AND") {
             this.validateAnd();

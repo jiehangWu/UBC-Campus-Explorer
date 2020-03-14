@@ -53,11 +53,12 @@ export default class Transformation {
             throw new InsightError("GROUP must be a non-empty array");
         }
         this.groupKeys = this.groupKeys.concat(this.GROUP);
-        // added
+
         this.GROUP.forEach((keyPair) => {
         let idstring = keyPair.split("_", 2)[0];
         let key = keyPair.split("_", 2)[1];
         this.IDstrings.push(idstring);
+
         if (idstring === "courses" && (! this.allFields4Courses.includes(key))) {
             throw new InsightError("Invalid keys in group");
         } else if (idstring === "rooms" && (! this.allFields4Rooms.includes(key))) {
@@ -117,13 +118,11 @@ export default class Transformation {
 
         }
     }
-    // keys in apply and gorup should cover all that in columns
 
     // return dataset result
     public processTransformation(dataObjArrary: any): any {
         let intermediate = this.performGroup(dataObjArrary);
         return this.performApply(intermediate);
-        // finally return an object start with {[id+key]:map.key * group#  and other apply rule }
     }
 
 
@@ -150,11 +149,6 @@ export default class Transformation {
         this.APPLY.forEach((rule: Applyrule) => {
             rule = new Applyrule(rule);
             rule.runRule(intermediate);
-
-            // don't really need this, since we gonna filter out the unnecessary fields
-            // intermediate.forEach((singleObj: any) => {
-            //     delete singleObj["data"];
-            // });
         });
         return intermediate;
     }
